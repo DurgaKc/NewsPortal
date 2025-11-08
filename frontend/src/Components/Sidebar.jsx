@@ -1,6 +1,9 @@
-import React from "react";
-import { Box, Card, CardContent, Avatar, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { Box, Card, CardContent, Avatar, Typography, IconButton } from "@mui/material";
 import ArrowCircleRightOutlinedIcon from "@mui/icons-material/ArrowCircleRightOutlined";
+import { getAllNews } from "../Pages/AdminPages/International/InterApi";
+import { useNavigate } from "react-router-dom";
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 // Sample news data grouped by category
 const newsByCategory = {
@@ -36,6 +39,23 @@ const SidebarProfile = ({ title, image }) => (
 
 // Sidebar Component
 const Sidebar = () => {
+const [internationalNews, setInternationalNews] = useState([]);
+ const navigate = useNavigate(); 
+
+useEffect(()=>{
+  const fetchNews = async () => {
+    try{
+      const response = await getAllNews();
+      if(response.data && Array.isArray(response.data)){
+        setInternationalNews(response.data);
+      }
+    }catch(error){
+      console.error("Error fetching international News:", error)
+    }
+  };
+  fetchNews();
+}, []);
+
   return (
     <Box sx={{ p: 2, overflowY: "auto", height: "100vh", borderLeft: 1, borderColor: "divider" }}>
       {Object.keys(newsByCategory).map((category) => (
@@ -43,15 +63,21 @@ const Sidebar = () => {
           {/* Category Header */}
           <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
             <Typography variant="h6" sx={{ fontWeight: 600 }}>
-              {category}
+              अन्तर्राष्ट्रिय
             </Typography>
+             <IconButton onClick={() => navigate("/international")}>
             <ArrowCircleRightOutlinedIcon fontSize="small" color="action" />
+          </IconButton>
           </Box>
 
           {/* List of 4 news per category */}
-          {newsByCategory[category].slice(0, 4).map((news) => (
-            <SidebarProfile key={news.id} title={news.title} image={news.image} />
-          ))}
+          {internationalNews.slice(0, 4).map((news) => (
+          <SidebarProfile
+            key={news.id}
+            title={news.topic} // assuming API provides “topic” field
+            image={`${backendUrl}/images/${news.image}`} // correct image path
+          />
+        ))}
         </Box>
       ))}
     </Box>

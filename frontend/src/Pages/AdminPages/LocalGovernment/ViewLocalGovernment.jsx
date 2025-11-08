@@ -17,30 +17,29 @@ import {
   Dialog,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import EditInternational from "./EditInternational";
-import DeleteInternational from "./DeleteInternational";
-import { getAllNews } from "./InterApi";
+import EditLocalGovernment from "./EditLocalGovernment";
+import DeleteLocalGovernment from "./DeleteLocalGovernment";
+import { getAllLocalGovernment } from "./LocalGovernmentApi";
 
-const InternationalList = () => {
+const ViewLocalGovernment = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedNewsId, setSelectedNewsId] = useState(null);
-  const [newsData, setNewsData] = useState([]); // replace dummy data
+  const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(3);
 
-  // Fetch news from API
+  // ✅ Fetch news from API
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const res = await getAllNews();
-      console.log("API response:", res.data); 
-      setNewsData(res.data); 
+      const res = await getAllLocalGovernment();
+      setNewsData(res.data);
     } catch (err) {
-      console.error("Error fetching news:", err);
+      console.error("Error fetching Local Government news:", err);
     } finally {
       setLoading(false);
     }
@@ -50,6 +49,7 @@ const InternationalList = () => {
     fetchNews();
   }, []);
 
+  // ✅ Handle close for both dialogs
   const handleCloseDialog = () => {
     setOpenEditDialog(false);
     setOpenDeleteDialog(false);
@@ -89,12 +89,15 @@ const InternationalList = () => {
         gutterBottom
         sx={{ mt: 6, mb: 2, textAlign: "center", fontWeight: "bold" }}
       >
-        List of International News
+        List of Local Government News
       </Typography>
 
-      {/* Add Button */}
+      {/* ✅ Add Button */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2, mr: 12 }}>
-        <Link to="/admin/interlist/add" style={{ textDecoration: "none" }}>
+        <Link
+          to="/admin/local-government/add"
+          style={{ textDecoration: "none" }}
+        >
           <Button
             variant="outlined"
             startIcon={<IoAddSharp />}
@@ -108,12 +111,12 @@ const InternationalList = () => {
               mr: "60px",
             }}
           >
-            Add International News
+            Add Local Government News
           </Button>
         </Link>
       </Box>
 
-      {/* Table Section */}
+      {/* ✅ Table Section */}
       <TableContainer
         component={Paper}
         sx={{
@@ -159,7 +162,12 @@ const InternationalList = () => {
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
                     {item.date}
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2", display: "flex" }}>
+                  <TableCell
+                    sx={{
+                      border: "1px solid #c2c2c2",
+                      display: "flex",
+                    }}
+                  >
                     <Button
                       size="small"
                       variant="outlined"
@@ -201,17 +209,17 @@ const InternationalList = () => {
         </Box>
       </TableContainer>
 
-      {/* Edit Dialog */}
+      {/* ✅ Edit Dialog */}
       <Dialog open={openEditDialog} onClose={handleCloseDialog}>
-        <EditInternational id={selectedNewsId} onClose={handleCloseDialog} />
+        <EditLocalGovernment id={selectedNewsId} onClose={handleCloseDialog} />
       </Dialog>
 
-      {/* Delete Dialog */}
+      {/* ✅ Delete Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleCloseDialog}>
-        <DeleteInternational  id={selectedNewsId} onClose={handleCloseDialog} />
+        <DeleteLocalGovernment id={selectedNewsId} onClose={handleCloseDialog} />
       </Dialog>
     </Grid>
   );
 };
 
-export default InternationalList;
+export default ViewLocalGovernment;

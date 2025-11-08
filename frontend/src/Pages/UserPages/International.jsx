@@ -1,189 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography, Grid, Button } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { getAllNews } from "../AdminPages/International/InterApi";
+import { Link } from "react-router-dom";
 
-const sampleData = [
-  {
-    id: 1,
-    topic: "Breaking News: अर्थशास्त्र",
-    media: "/tiger.jpeg",
-    description: "नेपालको अर्थतन्त्रबारे पछिल्लो अपडेट...",
-    createdAt: "2025-10-13T06:30:00Z",
-  },
-  {
-    id: 2,
-    topic: "इजरायल-गाजा द्वन्द्व",
-    media: "/roses.jpg",
-    description:
-      "नेपाल एक बहुसांस्कृतिक र बहुभाषिक देश हो जहाँ विभिन्न जातजाति, परम्परा र विश्वासहरू एउटै समाजमा समेटिएका छन्...",
-    createdAt: "2025-10-14T03:00:00Z",
-  },
-  {
-    id: 2,
-    topic: "इजरायल-गाजा द्वन्द्व",
-    media: "/roses.jpg",
-    description:
-      "नेपाल एक बहुसांस्कृतिक र बहुभाषिक देश हो जहाँ विभिन्न जातजाति, परम्परा र विश्वासहरू एउटै समाजमा समेटिएका छन्...",
-    createdAt: "2025-10-14T03:00:00Z",
-  },
-  {
-    id: 2,
-    topic: "इजरायल-गाजा द्वन्द्व",
-    media: "/roses.jpg",
-    description:
-      "नेपाल एक बहुसांस्कृतिक र बहुभाषिक देश हो जहाँ विभिन्न जातजाति, परम्परा र विश्वासहरू एउटै समाजमा समेटिएका छन्...",
-    createdAt: "2025-10-14T03:00:00Z",
-  },
-  {
-    id: 2,
-    topic: "इजरायल-गाजा द्वन्द्व",
-    media: "/roses.jpg",
-    description:
-      "नेपाल एक बहुसांस्कृतिक र बहुभाषिक देश हो जहाँ विभिन्न जातजाति, परम्परा र विश्वासहरू एउटै समाजमा समेटिएका छन्...",
-    createdAt: "2025-10-14T03:00:00Z",
-  },
-  {
-    id: 2,
-    topic: "इजरायल-गाजा द्वन्द्व",
-    media: "/roses.jpg",
-    description:
-      "नेपाल एक बहुसांस्कृतिक र बहुभाषिक देश हो जहाँ विभिन्न जातजाति, परम्परा र विश्वासहरू एउटै समाजमा समेटिएका छन्...",
-    createdAt: "2025-10-14T03:00:00Z",
-  },
-  {
-    id: 3,
-    topic: "स्थानीय चुनाव अपडेट",
-    media: "/birds.jpg",
-    description: "चुनावका तयारी तीव्र गतिमा अघि बढ्दै...",
-    createdAt: "2025-10-14T04:30:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/scene.jpg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/scene.jpg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/scene.jpg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/scene.jpg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/scene.jpg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/scene.jpg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/tiger.jpeg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/tiger.jpeg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-];
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const timeAgo = (date) => {
   const now = new Date();
@@ -197,23 +18,61 @@ const timeAgo = (date) => {
 
 const International = () => {
   const [news, setNews] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const firstPageItems = 20; // excluding the featured one
+  const firstPageItems = 20;
   const otherPageItems = 24;
 
   useEffect(() => {
-    const sortedNews = [...sampleData].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    );
-    setNews(sortedNews);
+    const fetchNews = async () => {
+      try {
+        const response = await getAllNews();
+
+     // Only include active news
+     const activeNews = response.data.filter((item) => {
+        const statusValue =
+          typeof item.status === "string"
+            ? item.status.toLowerCase()
+            : item.status;
+        return statusValue === "active" || statusValue === true;
+      });
+
+        const sortedNews = response.data.sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+        setNews(sortedNews);
+      } catch (error) {
+        console.error("Error fetching international news:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
   }, []);
 
-  // ✅ Featured news (only page 1)
-  const featured = news[0];
+  if (loading) {
+    return (
+      <Box className="flex justify-center items-center h-96">
+        <Typography variant="h6">Loading news...</Typography>
+      </Box>
+    );
+  }
 
-  // ✅ Paginated items logic
+  if (!news || news.length === 0) {
+    return (
+      <Box className="flex justify-center items-center h-96">
+        <Typography variant="h6" color="text.secondary">
+          No international news available.
+        </Typography>
+      </Box>
+    );
+  }
+
+  const featured = news[0];
   let paginatedItems = [];
+
   if (currentPage === 1) {
     paginatedItems = news.slice(1, firstPageItems + 1);
   } else {
@@ -222,10 +81,8 @@ const International = () => {
     paginatedItems = news.slice(startIndex, endIndex);
   }
 
-  // ✅ Total pages
   const remainingItems = news.length - 1 - firstPageItems;
-  const totalPages =
-    1 + Math.ceil(Math.max(0, remainingItems) / otherPageItems);
+  const totalPages = 1 + Math.ceil(Math.max(0, remainingItems) / otherPageItems);
 
   const handlePrev = () => {
     if (currentPage > 1) setCurrentPage(currentPage - 1);
@@ -237,16 +94,12 @@ const International = () => {
 
   return (
     <Box className="w-full p-5 pt-10">
-      {/* ✅ Show Featured News Only on Page 1 */}
+      {/* ✅ Featured News */}
       {currentPage === 1 && featured && (
-        <Grid
-          container
-          spacing={2}
-          className="mb-10 border-b border-gray-300 pb-6"
-        >
+        <Grid container spacing={2} className="mb-10 border-b border-gray-300 pb-6">
           <Grid item xs={12} md={7}>
             <img
-              src={featured.media}
+              src={`${backendUrl}/images/${featured.image}`}
               alt={featured.topic}
               className="w-full h-100 object-cover rounded-lg"
             />
@@ -256,7 +109,7 @@ const International = () => {
             <Box className="flex justify-end mt-2">
               <Box className="flex items-center gap-1 text-gray-500 text-sm mr-12">
                 <AccessTimeIcon sx={{ fontSize: 16 }} />
-                <Typography>{timeAgo(featured.createdAt)}</Typography>
+                <Typography>{timeAgo(featured.date)}</Typography>
               </Box>
             </Box>
 
@@ -264,9 +117,15 @@ const International = () => {
               {featured.topic}
             </Typography>
 
-            <Typography className="text-gray-700 text-base pt-6 line-clamp-3">
-              {featured.description}
-            </Typography>
+            {/* ✅ Link to details page */}
+            <Link
+              to={`/international/${featured._id}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Typography className="text-gray-700 text-base pt-6 hover:underline line-clamp-3">
+                {featured.description}
+              </Typography>
+            </Link>
           </Grid>
         </Grid>
       )}
@@ -274,10 +133,10 @@ const International = () => {
       {/* ✅ News Grid */}
       <Grid container spacing={2}>
         {paginatedItems.map((item, index) => (
-          <Grid item xs={12} sm={6} md={3} key={`${item.id}-${index}`}>
+          <Grid item xs={12} sm={6} md={3} key={`${item._id}-${index}`}>
             <Box className="flex flex-col gap-2">
               <img
-                src={item.media}
+                src={`${backendUrl}/images/${item.image}`}
                 alt={item.topic}
                 className="w-full h-90 object-cover rounded-lg"
               />
@@ -286,50 +145,43 @@ const International = () => {
                 {item.topic}
               </Typography>
 
-              <Typography className="text-gray-700 text-sm line-clamp-2">
-                {item.description}
-              </Typography>
+              <Link
+                to={`/international/${item._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <Typography className="text-gray-700 text-sm line-clamp-2 hover:underline">
+                  {item.description}
+                </Typography>
+              </Link>
             </Box>
           </Grid>
         ))}
       </Grid>
 
       {/* ✅ Pagination Buttons */}
-      {/* ✅ Pagination Buttons (Right Aligned + Clean UI) */}
-<Box className="flex justify-end items-center mt-8 gap-4 pr-4">
-  <Button
-    variant="contained"
-    size="small"
-    disabled={currentPage === 1}
-    onClick={handlePrev}
-    sx={{
-      textTransform: "none",
-      borderRadius: "8px",
-      padding: "6px 16px",
-    }}
-  >
-    Prev
-  </Button>
+      <Box className="flex justify-end items-center mt-8 gap-4 pr-4">
+        <Button
+          variant="contained"
+          size="small"
+          disabled={currentPage === 1}
+          onClick={handlePrev}
+        >
+          Prev
+        </Button>
 
-  <Typography className="text-gray-700 font-medium">
-    {currentPage} / {totalPages}
-  </Typography>
+        <Typography className="text-gray-700 font-medium">
+          {currentPage} / {totalPages}
+        </Typography>
 
-  <Button
-    variant="contained"
-    size="small"
-    disabled={currentPage === totalPages}
-    onClick={handleNext}
-    sx={{
-      textTransform: "none",
-      borderRadius: "8px",
-      padding: "6px 16px",
-    }}
-  >
-    Next
-  </Button>
-</Box>
-
+        <Button
+          variant="contained"
+          size="small"
+          disabled={currentPage === totalPages}
+          onClick={handleNext}
+        >
+          Next
+        </Button>
+      </Box>
     </Box>
   );
 };

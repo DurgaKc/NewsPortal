@@ -1,20 +1,20 @@
-const News = require("../models/international");
+const LocalGovernment = require("../models/localgovernment");
 
-// ✅ Get all news
-const getInternationals = async (req, res) => {
+// ✅ Get all local government news
+const getLocalGovernments = async (req, res) => {
   try {
-    const news = await News.find();
+    const news = await LocalGovernment.find();
     return res.json(news);
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// ✅ Get single news
-const getInternational = async (req, res) => {
+// ✅ Get single local government news
+const getLocalGovernment = async (req, res) => {
   try {
     const { id } = req.params;
-    const singleNews = await News.findById({_id:id});
+    const singleNews = await LocalGovernment.findById({_id:id});
     if (!singleNews) {
       return res.status(404).json({ message: "News not found" });
     }
@@ -24,33 +24,33 @@ const getInternational = async (req, res) => {
   }
 };
 
-// ✅ Add news
-const addInternational = async (req, res) => {
+// ✅ Add local government news
+const addLocalGovernment = async (req, res) => {
   try {
     const { topic, description, date, status } = req.body;
-    const normalizedStatus = status?.toLowerCase() === "active" ? "active" : "inactive";
 
     if (!topic || !description || !date || !status) {
       return res.status(400).json({ message: "Required fields can't be empty" });
     }
-    const newNews = await News.create({
+
+    const newNews = await LocalGovernment.create({
     topic: req.body.topic,
     description: req.body.description,
     date: req.body.date,
-    status: normalizedStatus,
+    status: req.body.status,
     image: req.file ? req.file.filename : null,
   });
-  
+
     res.status(201).json({ message: "News added successfully", data: newNews });
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// ✅ Edit news
-const editInternational = async (req, res) => {
+// ✅ Edit local government news
+const editLocalGovernment = async (req, res) => {
   try {
-    const news = await News.findById(req.params.id);
+    const news = await LocalGovernment.findById(req.params.id);
     if (!news) return res.status(404).json({ message: "News not found" });
 
     const updatedData = {
@@ -61,17 +61,17 @@ const editInternational = async (req, res) => {
       image: req.file ? req.file.filename : news.image,
     };
 
-    const updatedNews = await News.findByIdAndUpdate(req.params.id, updatedData, { new: true });
+    const updatedNews = await LocalGovernment.findByIdAndUpdate(req.params.id, updatedData, { new: true });
     return res.status(200).json(updatedNews);
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// ✅ Delete news
-const deleteInternational = async (req, res) => {
+// ✅ Delete local government news
+const deleteLocalGovernment = async (req, res) => {
   try {
-    const news = await News.findByIdAndDelete(req.params.id);
+    const news = await LocalGovernment.findByIdAndDelete(req.params.id);
     if (!news) {
       return res.status(404).json({ message: "News not found" });
     }
@@ -82,9 +82,9 @@ const deleteInternational = async (req, res) => {
 };
 
 module.exports = {
-  getInternationals,
-  getInternational,
-  addInternational,
-  editInternational,
-  deleteInternational,
+  getLocalGovernments,
+  getLocalGovernment,
+  addLocalGovernment,
+  editLocalGovernment,
+  deleteLocalGovernment,
 };

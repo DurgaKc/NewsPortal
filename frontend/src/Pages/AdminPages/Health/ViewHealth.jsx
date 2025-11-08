@@ -16,44 +16,42 @@ import {
   Tooltip,
   Dialog,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import EditInternational from "./EditInternational";
-import DeleteInternational from "./DeleteInternational";
-import { getAllNews } from "./InterApi";
+import { Link } from "react-router-dom";
+import EditHealth from "./EditHealth";
+import DeleteHealth from "./DeleteHealth";
+import { getAllHealth } from "./HealthApi";
 
-const InternationalList = () => {
+const ViewHealth = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedNewsId, setSelectedNewsId] = useState(null);
-  const [newsData, setNewsData] = useState([]); // replace dummy data
+  const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(3);
 
-  // Fetch news from API
-  const fetchNews = async () => {
+  // ✅ Fetch all health news
+  const fetchHealthNews = async () => {
     try {
       setLoading(true);
-      const res = await getAllNews();
-      console.log("API response:", res.data); 
-      setNewsData(res.data); 
+      const res = await getAllHealth();
+      setNewsData(res.data);
     } catch (err) {
-      console.error("Error fetching news:", err);
+      console.error("Error fetching health news:", err);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchNews();
+    fetchHealthNews();
   }, []);
 
   const handleCloseDialog = () => {
     setOpenEditDialog(false);
     setOpenDeleteDialog(false);
-    fetchNews(); // refresh after edit/delete
+    fetchHealthNews(); // refresh after edit/delete
   };
 
   const handleEdit = (id) => {
@@ -66,10 +64,7 @@ const InternationalList = () => {
     setOpenDeleteDialog(true);
   };
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
+  const handleChangePage = (event, newPage) => setPage(newPage);
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
@@ -89,12 +84,15 @@ const InternationalList = () => {
         gutterBottom
         sx={{ mt: 6, mb: 2, textAlign: "center", fontWeight: "bold" }}
       >
-        List of International News
+        List of Health News
       </Typography>
 
       {/* Add Button */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2, mr: 12 }}>
-        <Link to="/admin/interlist/add" style={{ textDecoration: "none" }}>
+        <Link
+          to="/admin/health/addhealthnews"
+          style={{ textDecoration: "none" }}
+        >
           <Button
             variant="outlined"
             startIcon={<IoAddSharp />}
@@ -108,7 +106,7 @@ const InternationalList = () => {
               mr: "60px",
             }}
           >
-            Add International News
+            Add Health News
           </Button>
         </Link>
       </Box>
@@ -148,7 +146,9 @@ const InternationalList = () => {
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
                     {page * rowsPerPage + index + 1}
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}>
+                  <TableCell
+                    sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}
+                  >
                     {item.topic}
                   </TableCell>
                   <TableCell>
@@ -159,7 +159,9 @@ const InternationalList = () => {
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
                     {item.date}
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2", display: "flex" }}>
+                  <TableCell
+                    sx={{ border: "1px solid #c2c2c2", display: "flex" }}
+                  >
                     <Button
                       size="small"
                       variant="outlined"
@@ -188,6 +190,7 @@ const InternationalList = () => {
           </TableBody>
         </Table>
 
+        {/* Pagination */}
         <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
           <TablePagination
             component="div"
@@ -196,22 +199,22 @@ const InternationalList = () => {
             onPageChange={handleChangePage}
             rowsPerPage={rowsPerPage}
             onRowsPerPageChange={handleChangeRowsPerPage}
-            rowsPerPageOptions={[10, 20, 50]}
+            rowsPerPageOptions={[3, 10, 20, 50]}
           />
         </Box>
       </TableContainer>
 
       {/* Edit Dialog */}
       <Dialog open={openEditDialog} onClose={handleCloseDialog}>
-        <EditInternational id={selectedNewsId} onClose={handleCloseDialog} />
+        <EditHealth id={selectedNewsId} onClose={handleCloseDialog} />
       </Dialog>
 
       {/* Delete Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleCloseDialog}>
-        <DeleteInternational  id={selectedNewsId} onClose={handleCloseDialog} />
+        <DeleteHealth id={selectedNewsId} onClose={handleCloseDialog} />
       </Dialog>
     </Grid>
   );
 };
 
-export default InternationalList;
+export default ViewHealth;

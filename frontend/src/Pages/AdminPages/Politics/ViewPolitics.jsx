@@ -17,15 +17,15 @@ import {
   Dialog,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import EditInternational from "./EditInternational";
-import DeleteInternational from "./DeleteInternational";
-import { getAllNews } from "./InterApi";
+import EditPolitics from "./EditPolitics";
+import DeletePolitics from "./DeletePolitics";
+import { getAllPolitics } from "./PoliticsApi";
 
-const InternationalList = () => {
+const ViewPolitics = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedNewsId, setSelectedNewsId] = useState(null);
-  const [newsData, setNewsData] = useState([]); // replace dummy data
+  const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -36,11 +36,10 @@ const InternationalList = () => {
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const res = await getAllNews();
-      console.log("API response:", res.data); 
-      setNewsData(res.data); 
+      const res = await getAllPolitics();
+      setNewsData(res.data);
     } catch (err) {
-      console.error("Error fetching news:", err);
+      console.error("Error fetching politics news:", err);
     } finally {
       setLoading(false);
     }
@@ -89,12 +88,12 @@ const InternationalList = () => {
         gutterBottom
         sx={{ mt: 6, mb: 2, textAlign: "center", fontWeight: "bold" }}
       >
-        List of International News
+        List of Politics News
       </Typography>
 
       {/* Add Button */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2, mr: 12 }}>
-        <Link to="/admin/interlist/add" style={{ textDecoration: "none" }}>
+        <Link to="/admin/politics/addpolitics" style={{ textDecoration: "none" }}>
           <Button
             variant="outlined"
             startIcon={<IoAddSharp />}
@@ -108,7 +107,7 @@ const InternationalList = () => {
               mr: "60px",
             }}
           >
-            Add International News
+            Add Political News
           </Button>
         </Link>
       </Box>
@@ -203,15 +202,15 @@ const InternationalList = () => {
 
       {/* Edit Dialog */}
       <Dialog open={openEditDialog} onClose={handleCloseDialog}>
-        <EditInternational id={selectedNewsId} onClose={handleCloseDialog} />
+        <EditPolitics id={selectedNewsId} onClose={handleCloseDialog} />
       </Dialog>
 
       {/* Delete Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleCloseDialog}>
-        <DeleteInternational  id={selectedNewsId} onClose={handleCloseDialog} />
+        <DeletePolitics id={selectedNewsId} onClose={handleCloseDialog} />
       </Dialog>
     </Grid>
   );
 };
 
-export default InternationalList;
+export default ViewPolitics;

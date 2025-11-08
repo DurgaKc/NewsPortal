@@ -20,8 +20,8 @@ const Navbar = () => {
   const navLinks = [
     { href: "/news", label: "समाचार" },
     { href: "interlist", label: "अन्तर्राष्ट्रिय" },
-    { href: "/politics", label: "राजनीति" },
-    { href: "/local-government", label: "स्थानीय सरकार" },
+    { href: "politics", label: "राजनीति" },
+    { href: "local-government", label: "स्थानीय सरकार" },
     { href: "/sports", label: "खेलकुद" },
     { href: "/interview", label: "अन्तर्वार्ता" },
     { href: "/entertainment", label: "मनोरञ्जन" },
@@ -171,7 +171,7 @@ const Navbar = () => {
                   ].map(([href, label]) => (
                     <Link
                       key={href}
-                      to={`/${href}`}
+                      to={`${href}`}
                       className="block px-4 py-2 hover:text-orange-500"
                     >
                       {label}

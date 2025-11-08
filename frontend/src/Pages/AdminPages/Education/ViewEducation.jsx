@@ -16,31 +16,31 @@ import {
   Tooltip,
   Dialog,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
-import EditInternational from "./EditInternational";
-import DeleteInternational from "./DeleteInternational";
-import { getAllNews } from "./InterApi";
+import { Link } from "react-router-dom";
+import EditEducation from "./EditEducation";
+import DeleteEducation from "./DeleteEducation";
+import { getAllEducation } from "./EducationApi";
 
-const InternationalList = () => {
+const ViewEducation = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [selectedNewsId, setSelectedNewsId] = useState(null);
-  const [newsData, setNewsData] = useState([]); // replace dummy data
+  const [newsData, setNewsData] = useState([]);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(3);
 
-  // Fetch news from API
+  // ✅ Fetch education news from API
   const fetchNews = async () => {
     try {
       setLoading(true);
-      const res = await getAllNews();
-      console.log("API response:", res.data); 
-      setNewsData(res.data); 
+      const res = await getAllEducation();
+      // Ensure we always have an array
+      setNewsData(Array.isArray(res) ? res : res.data || []);
     } catch (err) {
-      console.error("Error fetching news:", err);
+      console.error("Error fetching education news:", err);
+      setNewsData([]); // fallback
     } finally {
       setLoading(false);
     }
@@ -89,12 +89,15 @@ const InternationalList = () => {
         gutterBottom
         sx={{ mt: 6, mb: 2, textAlign: "center", fontWeight: "bold" }}
       >
-        List of International News
+        List of Education News
       </Typography>
 
-      {/* Add Button */}
+      {/* ✅ Add Button */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2, mr: 12 }}>
-        <Link to="/admin/interlist/add" style={{ textDecoration: "none" }}>
+        <Link
+          to="/admin/education/addeducationnews"
+          style={{ textDecoration: "none" }}
+        >
           <Button
             variant="outlined"
             startIcon={<IoAddSharp />}
@@ -108,12 +111,12 @@ const InternationalList = () => {
               mr: "60px",
             }}
           >
-            Add International News
+            Add Education News
           </Button>
         </Link>
       </Box>
 
-      {/* Table Section */}
+      {/* ✅ Table Section */}
       <TableContainer
         component={Paper}
         sx={{
@@ -142,13 +145,15 @@ const InternationalList = () => {
 
           <TableBody>
             {newsData
-              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              .map((item, index) => (
+              ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              ?.map((item, index) => (
                 <TableRow key={item._id}>
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
                     {page * rowsPerPage + index + 1}
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}>
+                  <TableCell
+                    sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}
+                  >
                     {item.topic}
                   </TableCell>
                   <TableCell>
@@ -157,9 +162,11 @@ const InternationalList = () => {
                     </Tooltip>
                   </TableCell>
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
-                    {item.date}
+                    {item.date?.split("T")[0]}
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2", display: "flex" }}>
+                  <TableCell
+                    sx={{ border: "1px solid #c2c2c2", display: "flex" }}
+                  >
                     <Button
                       size="small"
                       variant="outlined"
@@ -188,6 +195,7 @@ const InternationalList = () => {
           </TableBody>
         </Table>
 
+        {/* ✅ Pagination */}
         <Box sx={{ display: "flex", justifyContent: "flex-end", p: 1 }}>
           <TablePagination
             component="div"
@@ -201,17 +209,17 @@ const InternationalList = () => {
         </Box>
       </TableContainer>
 
-      {/* Edit Dialog */}
+      {/* ✅ Edit Dialog */}
       <Dialog open={openEditDialog} onClose={handleCloseDialog}>
-        <EditInternational id={selectedNewsId} onClose={handleCloseDialog} />
+        <EditEducation id={selectedNewsId} onClose={handleCloseDialog} />
       </Dialog>
 
-      {/* Delete Dialog */}
+      {/* ✅ Delete Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleCloseDialog}>
-        <DeleteInternational  id={selectedNewsId} onClose={handleCloseDialog} />
+        <DeleteEducation id={selectedNewsId} onClose={handleCloseDialog} />
       </Dialog>
     </Grid>
   );
 };
 
-export default InternationalList;
+export default ViewEducation;

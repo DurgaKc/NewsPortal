@@ -10,47 +10,65 @@ const NepaliDateTime = () => {
     engDate: "",
   });
 
-  const updateDateTime = () => {
-    const now = new Date();
+const updateDateTime = () => {
+  const now = new Date();
 
-    // English date
-    const engYear = now.getFullYear();
-    const engMonth = (now.getMonth() + 1).toString().padStart(2, "0");
-    const engDay = now.getDate().toString().padStart(2, "0");
-    const englishDate = `AD: ${engMonth}/${engDay}/${engYear}`;
+  // English date
+  const engYear = now.getFullYear();
+  const engMonth = (now.getMonth() + 1).toString().padStart(2, "0");
+  const engDay = now.getDate().toString().padStart(2, "0");
+  const englishDate = `AD: ${engMonth}/${engDay}/${engYear}`;
 
-    // Nepali date
-    const nepDate = new NepaliDate(now);
-    const bsYear = nepDate.getYear();
-    const bsMonth = nepDate.getMonth() + 1;
-    const bsDay = nepDate.getDate();
-    const nepaliWeekdays = [
-      "आइतबार",
-      "सोमबार",
-      "मङ्गलबार",
-      "बुधबार",
-      "बिहिबार",
-      "शुक्रबार",
-      "शनिबार",
-    ];
-    const weekday = nepaliWeekdays[now.getDay()];
+  // Nepali date
+  const nepDate = new NepaliDate(now);
+  const bsYear = nepDate.getYear();
+  const bsMonthIndex = nepDate.getMonth(); // 0-based
+  const bsDay = nepDate.getDate();
 
-    // Time
-    const hours = now.getHours().toString().padStart(2, "0");
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    const seconds = now.getSeconds().toString().padStart(2, "0");
+  const nepaliMonths = [
+    "बैशाख",
+    "जेठ",
+    "आषाढ",
+    "श्रावण",
+    "भाद्र",
+    "आश्विन",
+    "कार्तिक",
+    "मंसिर",
+    "पौष",
+    "माघ",
+    "फाल्गुण",
+    "चैत्र",
+  ];
+  const nepaliWeekdays = [
+    "आइतबार",
+    "सोमबार",
+    "मङ्गलबार",
+    "बुधबार",
+    "बिहिबार",
+    "शुक्रबार",
+    "शनिबार",
+  ];
 
-    // Nepal Sambat example conversion
-    const nepalSambatYear = bsYear - 880;
-    const nepalSambat = `${nepalSambatYear} कौला ङशि - ${bsDay}`;
+  const weekday = nepaliWeekdays[now.getDay()]; // Current weekday in Nepali
+  const bsMonthName = nepaliMonths[bsMonthIndex];
 
-    setDateTime({
-      bsDate: `वि.सं: ${bsYear} असोज ${bsDay} गते ${weekday}`,
-      nepaliTime: `${hours}:${minutes}:${seconds} बजे`,
-      nepaliSambat: `नेपाल संवत: ${nepalSambat}`,
-      engDate: englishDate,
-    });
-  };
+  // Time
+  const hours = now.getHours().toString().padStart(2, "0");
+  const minutes = now.getMinutes().toString().padStart(2, "0");
+  const seconds = now.getSeconds().toString().padStart(2, "0");
+
+  // Nepal Sambat example conversion
+  const nepalSambatYear = bsYear - 880;
+  const nepalSambat = `${nepalSambatYear} कौला ङशि - ${bsDay}`;
+
+  setDateTime({
+    bsDate: `वि.सं: ${bsYear} ${bsMonthName} ${bsDay} गते ${weekday}`,
+    nepaliTime: `${hours}:${minutes}:${seconds} बजे`,
+    nepaliSambat: `नेपाल संवत: ${nepalSambat}`,
+    engDate: englishDate,
+  });
+};
+
 
   useEffect(() => {
     updateDateTime();

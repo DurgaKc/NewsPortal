@@ -1,20 +1,20 @@
-const News = require("../models/international");
+const Sports = require("../models/sports");
 
-// ✅ Get all news
-const getInternationals = async (req, res) => {
+// ✅ Get all sports news
+const getSports = async (req, res) => {
   try {
-    const news = await News.find();
+    const news = await Sports.find();
     return res.json(news);
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// ✅ Get single news
-const getInternational = async (req, res) => {
+// ✅ Get single sports news
+const getSport = async (req, res) => {
   try {
     const { id } = req.params;
-    const singleNews = await News.findById({_id:id});
+    const singleNews = await Sports.findById({_id:id});
     if (!singleNews) {
       return res.status(404).json({ message: "News not found" });
     }
@@ -24,33 +24,33 @@ const getInternational = async (req, res) => {
   }
 };
 
-// ✅ Add news
-const addInternational = async (req, res) => {
+// ✅ Add sports news
+const addSports = async (req, res) => {
   try {
     const { topic, description, date, status } = req.body;
-    const normalizedStatus = status?.toLowerCase() === "active" ? "active" : "inactive";
 
     if (!topic || !description || !date || !status) {
       return res.status(400).json({ message: "Required fields can't be empty" });
     }
-    const newNews = await News.create({
-    topic: req.body.topic,
-    description: req.body.description,
-    date: req.body.date,
-    status: normalizedStatus,
-    image: req.file ? req.file.filename : null,
-  });
-  
+
+    const newNews = await Sports.create({
+      topic,
+      description,
+      date,
+      status,
+      image: req.file ? req.file.filename : null,
+    });
+
     res.status(201).json({ message: "News added successfully", data: newNews });
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// ✅ Edit news
-const editInternational = async (req, res) => {
+// ✅ Edit sports news
+const editSports = async (req, res) => {
   try {
-    const news = await News.findById(req.params.id);
+    const news = await Sports.findById(req.params.id);
     if (!news) return res.status(404).json({ message: "News not found" });
 
     const updatedData = {
@@ -61,17 +61,17 @@ const editInternational = async (req, res) => {
       image: req.file ? req.file.filename : news.image,
     };
 
-    const updatedNews = await News.findByIdAndUpdate(req.params.id, updatedData, { new: true });
+    const updatedNews = await Sports.findByIdAndUpdate(req.params.id, updatedData, { new: true });
     return res.status(200).json(updatedNews);
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// ✅ Delete news
-const deleteInternational = async (req, res) => {
+// ✅ Delete sports news
+const deleteSports = async (req, res) => {
   try {
-    const news = await News.findByIdAndDelete(req.params.id);
+    const news = await Sports.findByIdAndDelete(req.params.id);
     if (!news) {
       return res.status(404).json({ message: "News not found" });
     }
@@ -82,9 +82,9 @@ const deleteInternational = async (req, res) => {
 };
 
 module.exports = {
-  getInternationals,
-  getInternational,
-  addInternational,
-  editInternational,
-  deleteInternational,
+  getSports,
+  getSport,
+  addSports,
+  editSports,
+  deleteSports,
 };

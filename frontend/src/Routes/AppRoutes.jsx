@@ -21,6 +21,15 @@ import AddInternational from "../Pages/AdminPages/International/AddInternational
 import InternationalList from "../Pages/AdminPages/International/International";
 import PasswordChange from "../Components/Admin/PasswordChange";
 import UserProfile from "../Components/Admin/UserProfile";
+import InternationalDetail from "../Pages/AdminPages/International/InternationalDetail";
+import ViewPolitics from "../Pages/AdminPages/Politics/ViewPolitics";
+import AddPoliticsNews from "../Pages/AdminPages/Politics/AddPolitics";
+import ViewLocalGovernment from "../Pages/AdminPages/LocalGovernment/ViewLocalGovernment";
+import AddLocalGovernment from "../Pages/AdminPages/LocalGovernment/AddLocalGovernment";
+import ViewHealth from "../Pages/AdminPages/Health/ViewHealth";
+import AddHealthNews from "../Pages/AdminPages/Health/AddHealth";
+import ViewEducation from "../Pages/AdminPages/Education/ViewEducation";
+import AddEducationNews from "../Pages/AdminPages/Education/AddEducation";
 
 const AppRoutes = () => {
   return (
@@ -41,6 +50,8 @@ const AppRoutes = () => {
           <Route path="/literature" element={<Literature />} />
           <Route path="/lifestyle" element={<Lifestyle />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/international/:id" element={<InternationalDetail />} />
+
         </Route>
 
         <Route path="/admin" element={<AdminLayout />}>
@@ -52,6 +63,18 @@ const AppRoutes = () => {
           {/* international */}
           <Route path="interlist" element={<InternationalList/>}/>
           <Route path='/admin/interlist/add' element={<AddInternational/>}/>
+          {/* Politics */}
+          <Route path="politics" element={<ViewPolitics/>}/>
+          <Route path="/admin/politics/addpolitics" element={<AddPoliticsNews/>}/>
+          {/* local government */}
+          <Route path="local-government" element={<ViewLocalGovernment/>}/>
+          <Route path="/admin/local-government/add" element={<AddLocalGovernment/>}/>
+          {/* health */}
+          <Route path="health" element={<ViewHealth/>}/>
+          <Route path="/admin/health/addhealthnews" element={<AddHealthNews/>}/>
+          {/* Education */}
+          <Route path="education" element={<ViewEducation/>}/>
+          <Route path="/admin/education/addeducationnews" element={<AddEducationNews/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
