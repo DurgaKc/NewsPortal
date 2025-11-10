@@ -234,15 +234,17 @@ const AddPoliticsNews = ({ onClose }) => {
                 </Button>
 
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   onClick={() => navigate("/admin/politics")}
                   sx={{
                     textTransform: "none",
                     px: 4,
                     borderRadius: 2,
-                    color: "#2B6EB5",
-                    borderColor: "#2B6EB5",
-                    "&:hover": { borderColor: "#1e5b9c" },
+                    backgroundColor: "#d32f2f", // red
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#b71c1c", // dark red on hover
+                    },
                   }}
                 >
                   Cancel

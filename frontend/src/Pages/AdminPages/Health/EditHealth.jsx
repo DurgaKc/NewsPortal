@@ -33,7 +33,11 @@ const EditHealth = ({ onClose, id }) => {
   });
 
   // ✅ Fetch health news by id
-  const { data: fetchedNews, isLoading, refetch } = useQuery({
+  const {
+    data: fetchedNews,
+    isLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["health", id],
     queryFn: async () => {
       const res = await getHealthById(id);
@@ -197,7 +201,11 @@ const EditHealth = ({ onClose, id }) => {
                     <img
                       src={preview}
                       alt="Preview"
-                      style={{ width: "100%", height: "auto", display: "block" }}
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        display: "block",
+                      }}
                     />
                   </Box>
                 )}
@@ -263,15 +271,17 @@ const EditHealth = ({ onClose, id }) => {
                   </Button>
 
                   <Button
-                    variant="outlined"
+                    variant="contained"
                     onClick={() => onClose && onClose(null)}
                     sx={{
                       textTransform: "none",
                       px: 4,
                       borderRadius: 2,
-                      color: "#2B6EB5",
-                      borderColor: "#2B6EB5",
-                      "&:hover": { borderColor: "#1e5b9c" },
+                      backgroundColor: "#d32f2f", // red
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#b71c1c", // dark red on hover
+                      },
                     }}
                   >
                     Cancel

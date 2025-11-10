@@ -1,4 +1,9 @@
-import { Button, DialogActions, DialogContent, Typography } from "@mui/material";
+import {
+  Button,
+  DialogActions,
+  DialogContent,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { deleteLocalGovernment } from "./LocalGovernmentApi"; // ✅ correct import
@@ -38,13 +43,32 @@ const DeleteLocalGovernment = ({ id, onClose }) => {
         cannot be undone.
       </Typography>
       <DialogActions sx={{ pb: 2, pr: 2 }}>
-        <Button variant="outlined" size="small" onClick={onClose}>
+        <Button
+          variant="contained"
+          size="small"
+          sx={{
+            backgroundColor: "#1976d2", // Blue
+            color: "white",
+            "&:hover": {
+              backgroundColor: "#115293", // Darker blue on hover
+            },
+          }}
+          onClick={onClose}
+        >
           Cancel
         </Button>
         <Button
-          variant="outlined"
+          variant="contained"
           size="small"
-          sx={{ color: "red", borderColor: "red" }}
+          sx={{
+            color: "red",
+            borderColor: "white",
+            backgroundColor: "#d32f2f", // red
+            color: "white",
+            "&:hover": {
+              backgroundColor: "#b71c1c", // dark red on hover
+            },
+          }}
           onClick={handleDelete}
           disabled={loading}
         >

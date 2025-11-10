@@ -263,8 +263,11 @@ const EditInternational = ({ onClose, id }) => {
                       px: 4,
                       borderRadius: 2,
                       fontWeight: 600,
-                      backgroundColor: "#2B6EB5",
-                      "&:hover": { backgroundColor: "#1e5b9c" },
+                      backgroundColor: "#1976d2", // Blue
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#115293", // Darker blue on hover
+                      },
                     }}
                   >
                     {loading ? "Updating..." : "Update News"}
@@ -277,9 +280,11 @@ const EditInternational = ({ onClose, id }) => {
                       textTransform: "none",
                       px: 4,
                       borderRadius: 2,
-                      color: "#2B6EB5",
-                      borderColor: "#2B6EB5",
-                      "&:hover": { borderColor: "#1e5b9c" },
+                      backgroundColor: "#d32f2f", // red
+                      color: "white",
+                      "&:hover": {
+                        backgroundColor: "#b71c1c", // dark red on hover
+                      },
                     }}
                   >
                     Cancel

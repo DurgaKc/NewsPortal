@@ -280,15 +280,15 @@ const EditLocalGovernment = ({ onClose, id }) => {
                   </Button>
 
                   <Button
-                    variant="outlined"
+                    variant="contained"
                     onClick={() => onClose && onClose(null)}
                     sx={{
                       textTransform: "none",
                       px: 4,
                       borderRadius: 2,
-                      color: "#2B6EB5",
-                      borderColor: "#2B6EB5",
-                      "&:hover": { borderColor: "#1e5b9c" },
+                      color: "white",
+                      backgroundColor: "#d32f2f",
+                      "&:hover": { borderColor: "#b71c1c" },
                     }}
                   >
                     Cancel

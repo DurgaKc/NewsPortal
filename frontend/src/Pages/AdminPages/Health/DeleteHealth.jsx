@@ -1,4 +1,9 @@
-import { Button, DialogActions, DialogContent, Typography } from "@mui/material";
+import {
+  Button,
+  DialogActions,
+  DialogContent,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { deleteHealth } from "./HealthApi";
@@ -23,7 +28,8 @@ const DeleteHealth = ({ id, onClose }) => {
     } catch (error) {
       console.error(error);
       toast.error(
-        error.response?.data?.message || "Failed to delete health news. Please try again"
+        error.response?.data?.message ||
+          "Failed to delete health news. Please try again"
       );
     } finally {
       setLoading(false);
@@ -33,16 +39,34 @@ const DeleteHealth = ({ id, onClose }) => {
   return (
     <DialogContent sx={{ maxWidth: 600 }}>
       <Typography>
-        Are you sure you want to delete this health news? This action cannot be undone.
+        Are you sure you want to delete this health news? This action cannot be
+        undone.
       </Typography>
       <DialogActions sx={{ pb: 2, pr: 2 }}>
-        <Button variant="outlined" size="small" onClick={onClose}>
-          Cancel
-        </Button>
         <Button
           variant="outlined"
           size="small"
-          sx={{ color: "red", borderColor: "red" }}
+          sx={{
+            backgroundColor: "#1976d2", // Blue
+            color: "white",
+            "&:hover": {
+              backgroundColor: "#115293", // Darker blue on hover
+            },
+          }}
+          onClick={onClose}
+        >
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          size="small"
+          sx={{
+            backgroundColor: "#d32f2f", // red
+            color: "white",
+            "&:hover": {
+              backgroundColor: "#b71c1c", // dark red on hover
+            },
+          }}
           onClick={handleDelete}
           disabled={loading}
         >

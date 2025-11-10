@@ -7,6 +7,7 @@ import International from "../Pages/UserPages/International";
 import Politics from "../Pages/UserPages/Politics";
 import LocalGovernment from "../Pages/UserPages/LocalGovernment";
 import Sports from "../Pages/UserPages/Sports";
+import Province from "../Pages/UserPages/Province"
 import Interview from "../Pages/UserPages/Interview";
 import Entertainment from "../Pages/UserPages/Entertainment";
 import Education from "../Pages/UserPages/Education";
@@ -30,6 +31,18 @@ import ViewHealth from "../Pages/AdminPages/Health/ViewHealth";
 import AddHealthNews from "../Pages/AdminPages/Health/AddHealth";
 import ViewEducation from "../Pages/AdminPages/Education/ViewEducation";
 import AddEducationNews from "../Pages/AdminPages/Education/AddEducation";
+import ViewSports from "../Pages/AdminPages/Sports/ViewSports";
+import AddSportsNews from "../Pages/AdminPages/Sports/AddSports";
+import ViewInterview from "../Pages/AdminPages/Interview/ViewInterview";
+import AddInterview from "../Pages/AdminPages/Interview/AddInterview";
+import ViewBlog from "../Pages/AdminPages/Blog/ViewBlog";
+import AddBlog from "../Pages/AdminPages/Blog/AddBlog";
+import ViewProvince from "../Pages/AdminPages/Province/ViewProvince";
+import AddProvince from "../Pages/AdminPages/Province/AddProvince";
+import ViewEntertainment from "../Pages/AdminPages/Entertainment/ViewEntertainment";
+import AddEntertainment from "../Pages/AdminPages/Entertainment/AddEntertainment";
+import ViewLifestyle from "../Pages/AdminPages/Lifestyle/ViewLifestyle";
+import AddLifestyle from "../Pages/AdminPages/Lifestyle/AddLifestyle";
 
 const AppRoutes = () => {
   return (
@@ -42,6 +55,7 @@ const AppRoutes = () => {
           <Route path="/politics" element={<Politics />} />
           <Route path="/local-government" element={<LocalGovernment />} />
           <Route path="/sports" element={<Sports />} />
+          <Route path="/province" element={<Province />} />
           <Route path="/interview" element={<Interview />} />
           <Route path="/entertainment" element={<Entertainment />} />
           <Route path="/education" element={<Education />} />
@@ -75,6 +89,24 @@ const AppRoutes = () => {
           {/* Education */}
           <Route path="education" element={<ViewEducation/>}/>
           <Route path="/admin/education/addeducationnews" element={<AddEducationNews/>}/>
+          {/* Sports */}
+          <Route path="sports" element={<ViewSports/>}/>
+          <Route path="/admin/sports/addsports"  element={<AddSportsNews/>}/>
+          {/* Province */}
+          <Route path="province" element={<ViewProvince/>}/>
+          <Route path="/admin/province/addprovince"  element={<AddProvince/>}/>
+          {/* entertainment */}
+          <Route path="entertainment" element={<ViewEntertainment/>}/>
+          <Route path="/admin/entertainment/addentertainment"  element={<AddEntertainment/>}/>
+          {/* interview */}
+          <Route path="interview" element={<ViewInterview/>}/>
+          <Route path="/admin/interview/addinterview" element={<AddInterview/>}/>
+          {/* blog */}
+          <Route path="blog" element={<ViewBlog/>}/>
+          <Route path="/admin/blog/addblog" element={<AddBlog/>}/>
+          {/* lifestyle */}
+          <Route path="lifestyle" element={<ViewLifestyle/>}/>
+          <Route path="/admin/lifestyle/addlifestyle" element={<AddLifestyle/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

@@ -93,7 +93,10 @@ const AddLocalGovernment = ({ onClose }) => {
         Add Local Government News
       </Typography>
 
-      <Paper elevation={3} sx={{ maxWidth: 800, mx: "auto", p: 4, borderRadius: 3 }}>
+      <Paper
+        elevation={3}
+        sx={{ maxWidth: 800, mx: "auto", p: 4, borderRadius: 3 }}
+      >
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             {/* Topic */}
@@ -151,7 +154,12 @@ const AddLocalGovernment = ({ onClose }) => {
                   <IconButton
                     size="small"
                     onClick={removeImage}
-                    sx={{ position: "absolute", top: 4, right: 4, background: "rgba(255,255,255,0.8)" }}
+                    sx={{
+                      position: "absolute",
+                      top: 4,
+                      right: 4,
+                      background: "rgba(255,255,255,0.8)",
+                    }}
                   >
                     <CloseIcon fontSize="small" />
                   </IconButton>
@@ -168,9 +176,22 @@ const AddLocalGovernment = ({ onClose }) => {
             <Grid item xs={12} sm={6}>
               <FormControl component="fieldset">
                 <FormLabel component="legend">Status</FormLabel>
-                <RadioGroup row name="status" value={formData.status} onChange={handleChange}>
-                  <FormControlLabel value="active" control={<Radio color="primary" />} label="Active" />
-                  <FormControlLabel value="inactive" control={<Radio color="primary" />} label="Inactive" />
+                <RadioGroup
+                  row
+                  name="status"
+                  value={formData.status}
+                  onChange={handleChange}
+                >
+                  <FormControlLabel
+                    value="active"
+                    control={<Radio color="primary" />}
+                    label="Active"
+                  />
+                  <FormControlLabel
+                    value="inactive"
+                    control={<Radio color="primary" />}
+                    label="Inactive"
+                  />
                 </RadioGroup>
               </FormControl>
             </Grid>
@@ -192,20 +213,43 @@ const AddLocalGovernment = ({ onClose }) => {
 
             {/* Buttons */}
             <Grid item xs={12}>
-              <Box sx={{ display: "flex", justifyContent: "center", gap: 3, mt: 4 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 3,
+                  mt: 4,
+                }}
+              >
                 <Button
                   variant="contained"
                   type="submit"
                   disabled={loading}
                   startIcon={loading && <CircularProgress size={20} />}
-                  sx={{ textTransform: "none", px: 4, borderRadius: 2, fontWeight: 600, backgroundColor: "#2B6EB5", "&:hover": { backgroundColor: "#1e5b9c" } }}
+                  sx={{
+                    textTransform: "none",
+                    px: 4,
+                    borderRadius: 2,
+                    fontWeight: 600,
+                    backgroundColor: "#2B6EB5",
+                    "&:hover": { backgroundColor: "#1e5b9c" },
+                  }}
                 >
                   {loading ? "Adding..." : "Add News"}
                 </Button>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   onClick={() => navigate("/admin/local-government")}
-                  sx={{ textTransform: "none", px: 4, borderRadius: 2, color: "#2B6EB5", borderColor: "#2B6EB5", "&:hover": { borderColor: "#1e5b9c" } }}
+                  sx={{
+                    textTransform: "none",
+                    px: 4,
+                    borderRadius: 2,
+                    backgroundColor: "#d32f2f", // red
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "#b71c1c", // dark red on hover
+                    },
+                  }}
                 >
                   Cancel
                 </Button>

@@ -99,11 +99,14 @@ const ViewLocalGovernment = () => {
           style={{ textDecoration: "none" }}
         >
           <Button
-            variant="outlined"
+            variant="contained"
             startIcon={<IoAddSharp />}
             sx={{
-              color: "#2B6EB5",
-              borderColor: "#2B6EB5",
+              backgroundColor: "#1976d2", // Blue
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#115293", // Darker blue on hover
+              },
               textTransform: "none",
               fontWeight: 500,
               py: "2px",
@@ -151,7 +154,9 @@ const ViewLocalGovernment = () => {
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
                     {page * rowsPerPage + index + 1}
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}>
+                  <TableCell
+                    sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}
+                  >
                     {item.topic}
                   </TableCell>
                   <TableCell>
@@ -170,20 +175,32 @@ const ViewLocalGovernment = () => {
                   >
                     <Button
                       size="small"
-                      variant="outlined"
-                      sx={{ mx: 0.5, my: 0.5, textTransform: "none" }}
+                      variant="contained"
+                      sx={{
+                        mx: 0.5,
+                        my: 0.5,
+                        textTransform: "none",
+                        backgroundColor: "#1976d2", // Blue
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#115293", // Darker blue on hover
+                        },
+                      }}
                       onClick={() => handleEdit(item._id)}
                     >
                       Edit
                     </Button>
                     <Button
                       size="small"
-                      variant="outlined"
+                      variant="contained"
                       sx={{
                         mx: 0.5,
                         my: 0.5,
-                        color: "red",
-                        borderColor: "red",
+                        backgroundColor: "#d32f2f", // red
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#b71c1c", // dark red on hover
+                        },
                         textTransform: "none",
                       }}
                       onClick={() => handleDelete(item._id)}
@@ -216,7 +233,10 @@ const ViewLocalGovernment = () => {
 
       {/* ✅ Delete Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleCloseDialog}>
-        <DeleteLocalGovernment id={selectedNewsId} onClose={handleCloseDialog} />
+        <DeleteLocalGovernment
+          id={selectedNewsId}
+          onClose={handleCloseDialog}
+        />
       </Dialog>
     </Grid>
   );

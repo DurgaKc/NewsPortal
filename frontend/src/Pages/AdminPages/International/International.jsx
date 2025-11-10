@@ -37,8 +37,8 @@ const InternationalList = () => {
     try {
       setLoading(true);
       const res = await getAllNews();
-      console.log("API response:", res.data); 
-      setNewsData(res.data); 
+      console.log("API response:", res.data);
+      setNewsData(res.data);
     } catch (err) {
       console.error("Error fetching news:", err);
     } finally {
@@ -99,8 +99,11 @@ const InternationalList = () => {
             variant="outlined"
             startIcon={<IoAddSharp />}
             sx={{
-              color: "#2B6EB5",
-              borderColor: "#2B6EB5",
+              backgroundColor: "#1976d2", // Blue
+              color: "white",
+              "&:hover": {
+                backgroundColor: "#115293", // Darker blue on hover
+              },
               textTransform: "none",
               fontWeight: 500,
               py: "2px",
@@ -148,7 +151,9 @@ const InternationalList = () => {
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
                     {page * rowsPerPage + index + 1}
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}>
+                  <TableCell
+                    sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}
+                  >
                     {item.topic}
                   </TableCell>
                   <TableCell>
@@ -159,23 +164,37 @@ const InternationalList = () => {
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
                     {item.date}
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2", display: "flex" }}>
-                    <Button
-                      size="small"
-                      variant="outlined"
-                      sx={{ mx: 0.5, my: 0.5, textTransform: "none" }}
-                      onClick={() => handleEdit(item._id)}
-                    >
-                      Edit
-                    </Button>
+                  <TableCell
+                    sx={{ border: "1px solid #c2c2c2", display: "flex" }}
+                  >
                     <Button
                       size="small"
                       variant="outlined"
                       sx={{
                         mx: 0.5,
                         my: 0.5,
-                        color: "red",
-                        borderColor: "red",
+                        textTransform: "none",
+                        backgroundColor: "#1976d2", // Blue
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#115293", // Darker blue on hover
+                        },
+                      }}
+                      onClick={() => handleEdit(item._id)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="contained"
+                      sx={{
+                        mx: 0.5,
+                        my: 0.5,
+                        backgroundColor: "#d32f2f", // red
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#b71c1c", // dark red on hover
+                        },
                         textTransform: "none",
                       }}
                       onClick={() => handleDelete(item._id)}
@@ -208,7 +227,7 @@ const InternationalList = () => {
 
       {/* Delete Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleCloseDialog}>
-        <DeleteInternational  id={selectedNewsId} onClose={handleCloseDialog} />
+        <DeleteInternational id={selectedNewsId} onClose={handleCloseDialog} />
       </Dialog>
     </Grid>
   );
