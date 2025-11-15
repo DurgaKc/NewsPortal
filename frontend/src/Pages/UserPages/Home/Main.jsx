@@ -8,12 +8,12 @@ const Main = () => {
     <Box sx={{ p: 1, flexGrow: 1 }}>
       <Grid container>
         {/* Left side: RecentNews */}
-        <Grid item xs={12} md={7}>
+        <Grid item xs={12} md={7.5}>
           <RecentNews />
         </Grid>
 
         {/* Right side: Heading */}
-        <Grid item xs={12} md={5}>
+        <Grid item xs={12} md={4.4}>
           <Heading />
         </Grid>
       </Grid>

@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Box, Card, CardContent, Typography, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import Sidebar from "../../Components/Sidebar";
 import { getAllHealth } from "../AdminPages/Health/HealthApi";
 import { Link } from "react-router-dom";
+import LocalGovtSidebar from "../../Components/LocalGovtSidebar";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -110,10 +116,14 @@ const Health = () => {
                 <AccessTimeIcon sx={{ fontSize: 16 }} />
                 <Typography>{timeAgo(topNews.date)}</Typography>
               </Box>
-
-              <Typography variant="h4" className="font-bold pt-6">
-                {topNews.topic}
-              </Typography>
+              <Link
+                to={`/health/${topNews._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <Typography variant="h4" className="font-bold pt-6">
+                  {topNews.topic}
+                </Typography>
+              </Link>
 
               {topNews.description && (
                 <Typography className="text-gray-700 text-base mb-2 line-clamp-3 pt-6">
@@ -187,7 +197,9 @@ const Health = () => {
                     }}
                   >
                     <AccessTimeIcon fontSize="small" sx={{ mr: 0.5 }} />
-                    <Typography variant="caption">{timeAgo(item.date)}</Typography>
+                    <Typography variant="caption">
+                      {timeAgo(item.date)}
+                    </Typography>
                   </Box>
                 </CardContent>
               </Card>
@@ -203,7 +215,7 @@ const Health = () => {
               p: 2,
             }}
           >
-            <Sidebar />
+            <LocalGovtSidebar />
           </Box>
         </Box>
       </Box>

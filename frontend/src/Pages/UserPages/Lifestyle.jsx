@@ -1,337 +1,230 @@
 import React, { useEffect, useState } from "react";
-import { Box, Typography, Grid, Button } from "@mui/material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import {
+  Box,
+  Button,
+  DialogContent,
+  Grid,
+  Paper,
+  TextField,
+  Typography,
+  IconButton,
+  FormControl,
+  FormControlLabel,
+  FormLabel,
+  Radio,
+  RadioGroup,
+  CircularProgress,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import toast from "react-hot-toast";
+import { editLifestyle, getLifestyleById } from "../AdminPages/Lifestyle/LifestyleApi";
 
-const sampleData = [
-  {
-    id: 1,
-    topic: "Breaking News: अर्थशास्त्र",
-    media: "/tiger.jpeg",
-    description: "नेपालको अर्थतन्त्रबारे पछिल्लो अपडेट...",
-    createdAt: "2025-10-13T06:30:00Z",
-  },
-  {
-    id: 2,
-    topic: "इजरायल-गाजा द्वन्द्व",
-    media: "/roses.jpg",
-    description:
-      "नेपाल एक बहुसांस्कृतिक र बहुभाषिक देश हो जहाँ विभिन्न जातजाति, परम्परा र विश्वासहरू एउटै समाजमा समेटिएका छन्...",
-    createdAt: "2025-10-14T03:00:00Z",
-  },
-  {
-    id: 2,
-    topic: "इजरायल-गाजा द्वन्द्व",
-    media: "/roses.jpg",
-    description:
-      "नेपाल एक बहुसांस्कृतिक र बहुभाषिक देश हो जहाँ विभिन्न जातजाति, परम्परा र विश्वासहरू एउटै समाजमा समेटिएका छन्...",
-    createdAt: "2025-10-14T03:00:00Z",
-  },
-  {
-    id: 2,
-    topic: "इजरायल-गाजा द्वन्द्व",
-    media: "/roses.jpg",
-    description:
-      "नेपाल एक बहुसांस्कृतिक र बहुभाषिक देश हो जहाँ विभिन्न जातजाति, परम्परा र विश्वासहरू एउटै समाजमा समेटिएका छन्...",
-    createdAt: "2025-10-14T03:00:00Z",
-  },
-  {
-    id: 2,
-    topic: "इजरायल-गाजा द्वन्द्व",
-    media: "/roses.jpg",
-    description:
-      "नेपाल एक बहुसांस्कृतिक र बहुभाषिक देश हो जहाँ विभिन्न जातजाति, परम्परा र विश्वासहरू एउटै समाजमा समेटिएका छन्...",
-    createdAt: "2025-10-14T03:00:00Z",
-  },
-  {
-    id: 2,
-    topic: "इजरायल-गाजा द्वन्द्व",
-    media: "/roses.jpg",
-    description:
-      "नेपाल एक बहुसांस्कृतिक र बहुभाषिक देश हो जहाँ विभिन्न जातजाति, परम्परा र विश्वासहरू एउटै समाजमा समेटिएका छन्...",
-    createdAt: "2025-10-14T03:00:00Z",
-  },
-  {
-    id: 3,
-    topic: "स्थानीय चुनाव अपडेट",
-    media: "/birds.jpg",
-    description: "चुनावका तयारी तीव्र गतिमा अघि बढ्दै...",
-    createdAt: "2025-10-14T04:30:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/birds.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 4,
-    topic: "आर्थिक सुधार योजना",
-    media: "/roses.jpg",
-    description: "सरकारले नयाँ आर्थिक रणनीति ल्याउने तयारीमा...",
-    createdAt: "2025-10-14T05:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/scene.jpg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/scene.jpg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/scene.jpg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/scene.jpg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/scene.jpg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/scene.jpg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/tiger.jpeg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-  {
-    id: 5,
-    topic: "शिक्षा क्षेत्रमा सुधार",
-    media: "/tiger.jpeg",
-    description: "नयाँ पाठ्यक्रम विकास र शिक्षक तालिम सुरु...",
-    createdAt: "2025-10-13T08:00:00Z",
-  },
-];
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const timeAgo = (date) => {
-  const now = new Date();
-  const diff = Math.floor((now - new Date(date)) / 1000);
+const EditLifestyle = ({ onClose, id }) => {
+  const [formData, setFormData] = useState({
+    topic: "",
+    description: "",
+    date: "",
+    image: null,
+    status: "active",
+  });
 
-  if (diff < 60) return `${diff} sec ago`;
-  if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)} hrs ago`;
-  return `${Math.floor(diff / 86400)} days ago`;
-};
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-const Lifestyle = () => {
-  const [news, setNews] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  // Fetch data
+  const { data: fetchedPost, isLoading } = useQuery({
+    queryKey: ["lifestyle", id],
+    queryFn: () => getLifestyleById(id),
+    enabled: !!id,
+  });
 
-  const firstPageItems = 20; // excluding the featured one
-  const otherPageItems = 24;
-
+  // Prefill data
   useEffect(() => {
-    const sortedNews = [...sampleData].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    );
-    setNews(sortedNews);
-  }, []);
+    if (fetchedPost) {
+      setFormData({
+        topic: fetchedPost.topic,
+        description: fetchedPost.description,
+        date: fetchedPost.date?.split("T")[0],
+        image: fetchedPost.image,
+        status: fetchedPost.status,
+      });
 
-  // ✅ Featured news (only page 1)
-  const featured = news[0];
+      if (fetchedPost.image) {
+        setPreview(`${backendUrl}/images/${fetchedPost.image}`);
+      }
+    }
+  }, [fetchedPost]);
 
-  // ✅ Paginated items logic
-  let paginatedItems = [];
-  if (currentPage === 1) {
-    paginatedItems = news.slice(1, firstPageItems + 1);
-  } else {
-    const startIndex = 1 + firstPageItems + (currentPage - 2) * otherPageItems;
-    const endIndex = startIndex + otherPageItems;
-    paginatedItems = news.slice(startIndex, endIndex);
+  // Mutation
+  const mutation = useMutation({
+    mutationFn: async (data) => {
+      const token = localStorage.getItem("token");
+      return await editLifestyle(id, data, token);
+    },
+    onSuccess: () => {
+      toast.success("Lifestyle updated successfully!");
+      onClose && onClose();
+    },
+    onError: (err) => {
+      console.log(err);
+      toast.error("Failed to update lifestyle.");
+    },
+  });
+
+  // Handle text inputs
+  const handleChange = (e) => {
+    setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
+  };
+
+  // Handle image
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((p) => ({ ...p, image: file }));
+      setPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const removeImage = () => {
+    setFormData((p) => ({ ...p, image: null }));
+    setPreview(null);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    mutation.mutate(formData, {
+      onSettled: () => setLoading(false),
+    });
+  };
+
+  if (isLoading) {
+    return <Typography textAlign="center">Loading...</Typography>;
   }
 
-  // ✅ Total pages
-  const remainingItems = news.length - 1 - firstPageItems;
-  const totalPages =
-    1 + Math.ceil(Math.max(0, remainingItems) / otherPageItems);
-
-  const handlePrev = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
-
-  const handleNext = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
-
   return (
-    <Box className="w-full p-5 pt-10">
-      {/* ✅ Show Featured News Only on Page 1 */}
-      {currentPage === 1 && featured && (
-        <Grid
-          container
-          spacing={2}
-          className="mb-10 border-b border-gray-300 pb-6"
-        >
-          <Grid item xs={12} md={7}>
-            <img
-              src={featured.media}
-              alt={featured.topic}
-              className="w-full h-100 object-cover rounded-lg"
-            />
-          </Grid>
+    <Grid>
+      <DialogContent>
+        <Typography variant="h4" textAlign="center" sx={{ mb: 3 }}>
+          Edit Lifestyle Post
+        </Typography>
 
-          <Grid item xs={12} md={5}>
-            <Box className="flex justify-end mt-2">
-              <Box className="flex items-center gap-1 text-gray-500 text-sm mr-12">
-                <AccessTimeIcon sx={{ fontSize: 16 }} />
-                <Typography>{timeAgo(featured.createdAt)}</Typography>
-              </Box>
-            </Box>
+        <Paper sx={{ p: 3, maxWidth: 700, mx: "auto" }}>
+          <form onSubmit={handleSubmit}>
+            <Grid container spacing={2}>
 
-            <Typography variant="h3" className="font-bold leading-snug">
-              {featured.topic}
-            </Typography>
+              {/* Topic */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Topic"
+                  name="topic"
+                  value={formData.topic}
+                  onChange={handleChange}
+                  size="small"
+                />
+              </Grid>
 
-            <Typography className="text-gray-700 text-base pt-6 line-clamp-3">
-              {featured.description}
-            </Typography>
-          </Grid>
-        </Grid>
-      )}
+              {/* Date */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  type="date"
+                  label="Date"
+                  name="date"
+                  value={formData.date}
+                  onChange={handleChange}
+                  InputLabelProps={{ shrink: true }}
+                  size="small"
+                />
+              </Grid>
 
-      {/* ✅ News Grid */}
-      <Grid container spacing={3}>
-        {paginatedItems.map((item, index) => (
-          <Grid item xs={12} sm={6} md={4} key={`${item.id}-${index}`}>
-            <Box className="flex flex-col gap-2">
-              <img
-                src={item.media}
-                alt={item.topic}
-                className="w-full h-90 object-cover rounded-lg"
-              />
+              {/* Image */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  type="file"
+                  fullWidth
+                  size="small"
+                  name="image"
+                  onChange={handleImageChange}
+                  InputLabelProps={{ shrink: true }}
+                />
 
-              <Typography variant="h5" className="font-semibold">
-                {item.topic}
-              </Typography>
+                {preview && (
+                  <Box mt={1} position="relative">
+                    <IconButton
+                      size="small"
+                      onClick={removeImage}
+                      sx={{ position: "absolute", top: 4, right: 4 }}
+                    >
+                      <CloseIcon />
+                    </IconButton>
+                    <img
+                      src={preview}
+                      alt="preview"
+                      style={{ width: "100%", borderRadius: 8 }}
+                    />
+                  </Box>
+                )}
+              </Grid>
 
-              <Typography className="text-gray-700 text-sm line-clamp-2">
-                {item.description}
-              </Typography>
-            </Box>
-          </Grid>
-        ))}
-      </Grid>
+              {/* Status */}
+              <Grid item xs={12} sm={6}>
+                <FormControl>
+                  <FormLabel>Status</FormLabel>
+                  <RadioGroup
+                    row
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                  >
+                    <FormControlLabel value="active" control={<Radio />} label="Active" />
+                    <FormControlLabel value="inactive" control={<Radio />} label="Inactive" />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
 
-      {/* ✅ Pagination Buttons */}
-      {/* ✅ Pagination Buttons (Right Aligned + Clean UI) */}
-<Box className="flex justify-end items-center mt-8 gap-4 pr-4">
-  <Button
-    variant="contained"
-    size="small"
-    disabled={currentPage === 1}
-    onClick={handlePrev}
-    sx={{
-      textTransform: "none",
-      borderRadius: "8px",
-      padding: "6px 16px",
-    }}
-  >
-    Prev
-  </Button>
+              {/* Description */}
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  multiline
+                  rows={4}
+                  label="Description"
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  size="small"
+                />
+              </Grid>
 
-  <Typography className="text-gray-700 font-medium">
-    {currentPage} / {totalPages}
-  </Typography>
+              {/* Buttons */}
+              <Grid item xs={12}>
+                <Box display="flex" justifyContent="center" gap={3}>
+                  <Button
+                    variant="contained"
+                    type="submit"
+                    disabled={loading}
+                    startIcon={loading && <CircularProgress size={20} />}
+                  >
+                    {loading ? "Updating..." : "Update"}
+                  </Button>
 
-  <Button
-    variant="contained"
-    size="small"
-    disabled={currentPage === totalPages}
-    onClick={handleNext}
-    sx={{
-      textTransform: "none",
-      borderRadius: "8px",
-      padding: "6px 16px",
-    }}
-  >
-    Next
-  </Button>
-</Box>
+                  <Button variant="contained" color="error" onClick={() => onClose()}>
+                    Cancel
+                  </Button>
+                </Box>
+              </Grid>
 
-    </Box>
+            </Grid>
+          </form>
+        </Paper>
+      </DialogContent>
+    </Grid>
   );
 };
 
-export default Lifestyle;
+export default EditLifestyle;

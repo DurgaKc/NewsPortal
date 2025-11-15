@@ -13,7 +13,7 @@ import Entertainment from "../Pages/UserPages/Entertainment";
 import Education from "../Pages/UserPages/Education";
 import Blog from "../Pages/UserPages/Blog";
 import Health from "../Pages/UserPages/Health";
-import Literature from "../Pages/UserPages/Literature";
+import Literature from "../Pages/UserPages/Literature/Literature";
 import Lifestyle from "../Pages/UserPages/Lifestyle";
 import Login from "../Pages/UserPages/Login";
 import AdminLayout from "../Layout/AdminLayout";
@@ -43,6 +43,24 @@ import ViewEntertainment from "../Pages/AdminPages/Entertainment/ViewEntertainme
 import AddEntertainment from "../Pages/AdminPages/Entertainment/AddEntertainment";
 import ViewLifestyle from "../Pages/AdminPages/Lifestyle/ViewLifestyle";
 import AddLifestyle from "../Pages/AdminPages/Lifestyle/AddLifestyle";
+import PoliticsDetails from "../Pages/AdminPages/Politics/PoliticsDetails";
+import LocalGovernmentDetails from "../Pages/AdminPages/LocalGovernment/LocalGovernmentDetails";
+import SportsDetails from "../Pages/AdminPages/Sports/SportsDetails";
+import ProvinceDetails from "../Pages/AdminPages/Province/ProvinceDetails";
+import EducationDetails from "../Pages/AdminPages/Education/EducationDetails";
+import HealthDetails from "../Pages/AdminPages/Health/HealthDetails";
+import ViewLiterature from "../Pages/AdminPages/Literature/ViewLiterature";
+import AddLiterature from "../Pages/AdminPages/Literature/AddLiterature";
+import PoemList from "../Pages/UserPages/Literature/poem";
+import LiteratureDetails from "../Pages/UserPages/Literature/LiteratureDetails";
+import StoryList from "../Pages/UserPages/Literature/Story";
+import MuktakList from "../Pages/UserPages/Literature/muktak";
+import GhazalList from "../Pages/UserPages/Literature/Ghazal";
+import ViewAdvertisement from "../Pages/AdminPages/Advertisement/ViewAdvertisement";
+import AddAdvertisement from "../Pages/AdminPages/Advertisement/AddAdvertisement";
+import InterviewDetails from "../Pages/AdminPages/Interview/InterviewDetails";
+import BlogDetails from "../Pages/AdminPages/Blog/BlogDetails";
+import LifestyleDetails from "../Pages/AdminPages/Lifestyle/LifestyleDetails";
 
 const AppRoutes = () => {
   return (
@@ -65,6 +83,21 @@ const AppRoutes = () => {
           <Route path="/lifestyle" element={<Lifestyle />} />
           <Route path="/login" element={<Login />} />
           <Route path="/international/:id" element={<InternationalDetail />} />
+          <Route path="/politics/:id" element={<PoliticsDetails />} />
+          <Route path="/local-government/:id" element={<LocalGovernmentDetails />} />
+          <Route path="/sports/:id" element={<SportsDetails />} />
+          <Route path="/province/:id" element={<ProvinceDetails />} />
+          <Route path="/interview/:id" element={<InterviewDetails />} />
+          <Route path="/education/:id" element={<EducationDetails />} />
+          <Route path="/health/:id" element={<HealthDetails />} />
+          <Route path="/literature/:id" element={<LiteratureDetails />} />
+          <Route path="/blog/:id" element={<BlogDetails />} />
+          <Route path="/lifestyle/:id" element={<LifestyleDetails />} />
+          <Route path="/literature/poem" element={<PoemList />} />
+          <Route path="/literature/story" element={<StoryList />} />
+          <Route path="/literature/muktak" element={<MuktakList />} />
+          <Route path="/literature/ghazal" element={<GhazalList />} />
+
 
         </Route>
 
@@ -80,6 +113,7 @@ const AppRoutes = () => {
           {/* Politics */}
           <Route path="politics" element={<ViewPolitics/>}/>
           <Route path="/admin/politics/addpolitics" element={<AddPoliticsNews/>}/>
+
           {/* local government */}
           <Route path="local-government" element={<ViewLocalGovernment/>}/>
           <Route path="/admin/local-government/add" element={<AddLocalGovernment/>}/>
@@ -107,6 +141,12 @@ const AppRoutes = () => {
           {/* lifestyle */}
           <Route path="lifestyle" element={<ViewLifestyle/>}/>
           <Route path="/admin/lifestyle/addlifestyle" element={<AddLifestyle/>}/>
+          {/* literature */}
+          <Route path="literature" element={<ViewLiterature/>}/>
+          <Route path="/admin/literature/addliterature" element={<AddLiterature/>}/>
+          {/* advertisement */}
+          <Route path="advertisement" element={<ViewAdvertisement/>}/>
+          <Route path="/admin/advertisement/addadvertisement" element={<AddAdvertisement/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

@@ -26,8 +26,8 @@ const AddBlog = ({ onClose }) => {
     topic: "",
     description: "",
     date: "",
-    status: "active",
     video: null,
+    status: "active",
   });
 
   const [preview, setPreview] = useState(null);
@@ -69,8 +69,8 @@ const AddBlog = ({ onClose }) => {
         topic: "",
         description: "",
         date: "",
-        status: "active",
         video: null,
+        status: "active",
       });
       setPreview(null);
       onClose && onClose();
@@ -99,11 +99,11 @@ const AddBlog = ({ onClose }) => {
       >
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
-            {/* topic */}
+            {/* Topic */}
             <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
-                label="topic"
+                label="Blog Topic"
                 name="topic"
                 value={formData.topic}
                 onChange={handleChange}
@@ -126,7 +126,6 @@ const AddBlog = ({ onClose }) => {
                 required
               />
             </Grid>
-
             {/* Video Upload */}
             <Grid item xs={12} sm={6}>
               <TextField
@@ -171,7 +170,6 @@ const AddBlog = ({ onClose }) => {
                 </Box>
               )}
             </Grid>
-
             {/* Status Radio Buttons */}
             <Grid item xs={12} sm={6}>
               <FormControl component="fieldset">
@@ -196,7 +194,7 @@ const AddBlog = ({ onClose }) => {
               </FormControl>
             </Grid>
 
-            {/* description */}
+            {/* Description */}
             <Grid item xs={12}>
               <TextField
                 fullWidth
@@ -225,11 +223,8 @@ const AddBlog = ({ onClose }) => {
                     px: 4,
                     borderRadius: 2,
                     fontWeight: 600,
-                    backgroundColor: "#1976d2", // Blue
-                    color: "white",
-                    "&:hover": {
-                      backgroundColor: "#115293", // Darker blue on hover
-                    },
+                    backgroundColor: "#2B6EB5",
+                    "&:hover": { backgroundColor: "#1e5b9c" },
                   }}
                 >
                   {loading ? "Adding..." : "Add Blog"}
@@ -242,11 +237,9 @@ const AddBlog = ({ onClose }) => {
                     textTransform: "none",
                     px: 4,
                     borderRadius: 2,
-                    backgroundColor: "#d32f2f", // red
                     color: "white",
-                    "&:hover": {
-                      backgroundColor: "#b71c1c", // dark red on hover
-                    },
+                    backgroundColor: "#d32f2f",
+                    "&:hover": { backgroundColor: "#b71c1c" },
                   }}
                 >
                   Cancel

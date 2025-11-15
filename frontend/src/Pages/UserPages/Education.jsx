@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Box, Card, CardContent, Typography, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import Sidebar from "../../Components/Sidebar";
+import Sidebar from "../../Components/PoliticsSidebar";
 import { getAllEducation } from "../AdminPages/Education/EducationApi";
 import { Link } from "react-router-dom";
 
@@ -97,7 +103,11 @@ const Education = () => {
         {topNews && (
           <Box className="mb-8 flex flex-col md:flex-row gap-4 items-start">
             <img
-              src={topNews.image ? `${backendUrl}/images/${topNews.image}` : "/noimage.jpg"}
+              src={
+                topNews.image
+                  ? `${backendUrl}/images/${topNews.image}`
+                  : "/noimage.jpg"
+              }
               alt={topNews.topic}
               className="w-full md:w-1/2 h-80 md:h-90 object-cover rounded-lg"
             />
@@ -107,10 +117,14 @@ const Education = () => {
                 <AccessTimeIcon sx={{ fontSize: 16 }} />
                 <Typography>{timeAgo(topNews.date)}</Typography>
               </Box>
-
-              <Typography variant="h4" className="font-bold pt-6">
-                {topNews.topic}
-              </Typography>
+              <Link
+                to={`/education/${topNews._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <Typography variant="h4" className="font-bold pt-6">
+                  {topNews.topic}
+                </Typography>
+              </Link>
 
               {topNews.description && (
                 <Typography className="text-gray-700 text-base mb-2 line-clamp-3 pt-6">
@@ -136,7 +150,11 @@ const Education = () => {
               <Card key={item._id} sx={{ display: "flex", overflow: "hidden" }}>
                 <Box
                   component="img"
-                  src={item.image ? `${backendUrl}/images/${item.image}` : "/noimage.jpg"}
+                  src={
+                    item.image
+                      ? `${backendUrl}/images/${item.image}`
+                      : "/noimage.jpg"
+                  }
                   alt={item.topic}
                   sx={{ width: 220, height: 140, objectFit: "cover" }}
                 />
@@ -183,7 +201,9 @@ const Education = () => {
                     }}
                   >
                     <AccessTimeIcon fontSize="small" sx={{ mr: 0.5 }} />
-                    <Typography variant="caption">{timeAgo(item.date)}</Typography>
+                    <Typography variant="caption">
+                      {timeAgo(item.date)}
+                    </Typography>
                   </Box>
                 </CardContent>
               </Card>

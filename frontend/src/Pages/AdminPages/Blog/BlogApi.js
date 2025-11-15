@@ -63,7 +63,7 @@ export const deleteBlog = async (id, token) => {
 
 // ✅ Get all Blogs
 export const getAllBlog = async () => {
-  return axios.get(`${backendUrl}/blog/getBlog`);
+  return axios.get(`${backendUrl}/blog/getBlogs`);
 };
 
 // ✅ Get single Blog by ID

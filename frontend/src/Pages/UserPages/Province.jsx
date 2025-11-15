@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Box, Card, CardContent, Typography, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import Sidebar from "../../Components/Sidebar";
-import { getAllProvinces } from "../AdminPages/Province/ProvinceApi"; 
+import { getAllProvinces } from "../AdminPages/Province/ProvinceApi";
 import { Link } from "react-router-dom";
+import PoliticsSidebar from "../../Components/PoliticsSidebar";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -111,15 +117,24 @@ const Province = () => {
                 <Typography>{timeAgo(topNews.date)}</Typography>
               </Box>
 
-              <Typography variant="h4" className="font-bold pt-6">
+              <Typography
+                variant="h4"
+                className="font-bold pt-6 hover:underline cursor-pointer"
+                component={Link}
+                to={`/province/${topNews._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
                 {topNews.topic}
               </Typography>
 
-              {topNews.description && (
-                <Typography className="text-gray-700 text-base mb-2 line-clamp-3 pt-6">
-                  {shortDescription(topNews.description)}
-                </Typography>
-              )}
+              <Typography
+                className="text-gray-700 text-base pt-6 hover:underline cursor-pointer line-clamp-3"
+                component={Link}
+                to={`/province/${topNews._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                {topNews.description}
+              </Typography>
             </Box>
           </Box>
         )}
@@ -187,7 +202,9 @@ const Province = () => {
                     }}
                   >
                     <AccessTimeIcon fontSize="small" sx={{ mr: 0.5 }} />
-                    <Typography variant="caption">{timeAgo(item.date)}</Typography>
+                    <Typography variant="caption">
+                      {timeAgo(item.date)}
+                    </Typography>
                   </Box>
                 </CardContent>
               </Card>
@@ -203,7 +220,7 @@ const Province = () => {
               p: 2,
             }}
           >
-            <Sidebar />
+            <PoliticsSidebar />
           </Box>
         </Box>
       </Box>

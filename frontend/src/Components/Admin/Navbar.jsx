@@ -18,7 +18,7 @@ const Navbar = () => {
   const othersRef = useRef(null);
 
   const navLinks = [
-    { href: "/news", label: "समाचार" },
+    { href: "advertisement", label: "विज्ञापन" },
     { href: "interlist", label: "अन्तर्राष्ट्रिय" },
     { href: "politics", label: "राजनीति" },
     { href: "local-government", label: "स्थानीय सरकार" },

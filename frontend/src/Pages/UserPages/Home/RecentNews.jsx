@@ -1,89 +1,132 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { Link } from "react-router-dom";
+import { getAllNews } from "../../AdminPages/International/InterApi";
+import { getAllPolitics } from "../../AdminPages/Politics/PoliticsApi";
+import { getAllSports } from "../../AdminPages/Sports/SportsApi";
 
-const sampleData = [
-  {
-    id: 1,
-    topic: "Breaking News: अर्थशास्त्र",
-    media:  "/tiger.jpeg",
-    description: "नेपालको अर्थतन्त्रबारे पछिल्लो अपडेट...",
-     createdAt: "2025-10-13T06:30:00Z",
-    // createdAt: new Date(Date.now() - 1000 * 60 * 30), // 30 mins ago
-  },
-  {
-    id: 2,
-    topic: "इजरायल-गाजा द्वन्द्व",
-    media: "/news.png",
-    description: "नेपाल एक बहुसांस्कृतिक र बहुभाषिक देश हो जहाँ विभिन्न जातजाति, परम्परा र विश्वासहरू एउटै समाजमा समेटिएका छन्। पहाड, तराई र हिमालका बस्तीहरूमा बसोबास गर्ने मानिसहरूको जीवनशैली, बोलिचाली र उत्सवहरूमा फरकपन भए पनि आपसी सद्भाव र सहअस्तित्वको भावना बलियो छ। पछिल्ला वर्षहरूमा शिक्षा, स्वास्थ्य, संचार र पूर्वाधारको विकाससँगै ग्रामीण क्षेत्रहरूमा उल्लेखनीय परिवर्तन आइरहेका छन्।",
-    createdAt: "2025-10-14T03:00:00Z",
-    // createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5), // 5 hours ago
-  },
-];
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const timeAgo = (date) => {
-  const now = new Date();
-  const diff = Math.floor((now - new Date(date)) / 1000);
+const CurrentNews = () => {
+  const [allStories, setAllStories] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  if (diff < 60) return `${diff} sec ago`;
-  if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)} hrs ago`;
-  return `${Math.floor(diff / 86400)} days ago`;
-};
+  // Time ago function
+  const timeAgo = (date) => {
+    const now = new Date();
+    const past = new Date(date);
+    const diffYears = now.getFullYear() - past.getFullYear();
+    if (diffYears >= 1) return `${diffYears} years ago`;
 
+    const diffMonths = now.getMonth() - past.getMonth();
+    if (diffMonths >= 1) return `${diffMonths} months ago`;
 
-const RecentNews = () => {
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [news, setNews] = useState([]);
+    const diffDays = Math.floor((now - past) / (1000 * 60 * 60 * 24));
+    if (diffDays >= 1) return `${diffDays} days ago`;
+
+    return "Today";
+  };
 
   useEffect(() => {
-  setNews(sampleData);
+    const fetchNews = async () => {
+      try {
+        const [intlRes, polRes, sportsRes] = await Promise.all([
+          getAllNews(),
+          getAllPolitics(),
+          getAllSports(),
+        ]);
 
-  const interval = setInterval(() => {
-    setCurrentTime(new Date());
-  }, 60000); // updates every minute
+        const getActiveNews = (data) =>
+          data
+            .filter((item) => item.status === "active" || item.status === true)
+            .sort((a, b) => new Date(b.date) - new Date(a.date))
+            .slice(0, 2);
 
-  return () => clearInterval(interval);
-}, []);
+        const intl = getActiveNews(intlRes.data);
+        const pol = getActiveNews(polRes.data);
+        const sports = getActiveNews(sportsRes.data);
 
+        const combined = [
+          ...intl.map((i) => ({ ...i, type: "international" })),
+          ...pol.map((i) => ({ ...i, type: "politics" })),
+          ...sports.map((i) => ({ ...i, type: "sports" })),
+        ];
+
+        setAllStories(
+          combined.map((item) => ({
+            id: item._id,
+            img: item.image ? `${backendUrl}/images/${item.image}` : "/placeholder.jpg",
+            label: item.topic,
+            description: item.description?.slice(0, 60) + "...",
+            time: item.date,
+            type: item.type,
+          }))
+        );
+      } catch (err) {
+        console.error("Error fetching news:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
+
+  const getNewsRoute = (story) => {
+    switch (story.type) {
+      case "international":
+        return `/international/${story.id}`;
+      case "politics":
+        return `/politics/${story.id}`;
+      case "sports":
+        return `/sports/${story.id}`;
+      default:
+        return "#";
+    }
+  };
+
+  if (loading) {
+    return <Typography className="p-4 text-gray-500">Loading...</Typography>;
+  }
 
   return (
-    <>
-    <Box className="w-full max-w-4xl p-4">
-      {news.map((item) => (
-        <Box
-          key={item.id}
-          className="mb-8 border-b border-gray-300 pb-6 flex flex-col items-center gap-3"
+    <Box className="flex flex-col gap-4 mt-4">
+      {allStories.map((story) => (
+        <Link
+          key={story.id}
+          to={getNewsRoute(story)}
+          style={{ textDecoration: "none", color: "inherit" }}
         >
-          {/* ✅ Topic */}
-          <Typography variant="h3" className="font-bold text-2xl text-center">
-            {item.topic}
-          </Typography>
+          <Box className="bg-white shadow-md rounded-xl flex gap-4 p-3 cursor-pointer hover:shadow-lg transition-all">
 
-          {/* ✅ Dynamic Time */}
-          <Box className="flex items-center gap-1 text-gray-500 text-sm mr-6 self-end">
-            <AccessTimeIcon sx={{ fontSize: 16 }} />
-            <Typography>{timeAgo(item.createdAt)}</Typography>
+            {/* IMAGE */}
+            <img
+              src={story.img}
+              alt={story.label}
+              className="w-40 h-28 rounded-lg object-cover"
+            />
+
+            {/* TEXT AREA */}
+            <Box className="flex flex-col justify-center">
+              <Typography variant="h6" className="font-semibold text-gray-900">
+                {story.label}
+              </Typography>
+
+              <Typography className="text-gray-600 text-sm mt-1">
+                {story.description}
+              </Typography>
+
+              <Box className="flex items-center gap-1 text-gray-500 text-xs mt-2">
+                <AccessTimeIcon style={{ fontSize: "14px" }} />
+                <span>{timeAgo(story.time)}</span>
+              </Box>
+            </Box>
           </Box>
-
-          {/* ✅ Photo */}
-          <img
-            src={item.media}
-            alt={item.topic}
-            className="w-full h-120 object-cover rounded-lg"
-          />
-
-          {/* ✅ Description */}
-          <Typography className="text-gray-700 text-base text-justify">
-            {item.description}
-          </Typography>
-         
-        </Box>
-        
+        </Link>
       ))}
-    </Box> 
-    </>
+    </Box>
   );
 };
 
-export default RecentNews;
+export default CurrentNews;

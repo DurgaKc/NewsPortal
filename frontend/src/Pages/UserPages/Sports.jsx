@@ -1,9 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Box, Card, CardContent, Typography, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import Sidebar from "../../Components/Sidebar";
 import { getAllSports } from "../AdminPages/Sports/SportsApi";
 import { Link } from "react-router-dom";
+import SportsSidebar from "../../Components/SportsSidebar";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
@@ -111,7 +117,13 @@ const Sports = () => {
                 <Typography>{timeAgo(topNews.date)}</Typography>
               </Box>
 
-              <Typography variant="h4" className="font-bold pt-6">
+              <Typography
+                variant="h4"
+                className="font-bold pt-6 cursor-pointer hover:underline"
+                component={Link}
+                to={`/sports/${topNews._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
                 {topNews.topic}
               </Typography>
 
@@ -142,8 +154,7 @@ const Sports = () => {
                   component="img"
                   src={`${backendUrl}/images/${item.image}`}
                   alt={item.topic}
-                   sx={{ width: 220, height: 140, objectFit: "cover" }}
-
+                  sx={{ width: 220, height: 140, objectFit: "cover" }}
                 />
                 <CardContent
                   sx={{
@@ -188,7 +199,9 @@ const Sports = () => {
                     }}
                   >
                     <AccessTimeIcon fontSize="small" sx={{ mr: 0.5 }} />
-                    <Typography variant="caption">{timeAgo(item.date)}</Typography>
+                    <Typography variant="caption">
+                      {timeAgo(item.date)}
+                    </Typography>
                   </Box>
                 </CardContent>
               </Card>
@@ -204,7 +217,7 @@ const Sports = () => {
               p: 2,
             }}
           >
-            <Sidebar />
+            <SportsSidebar />
           </Box>
         </Box>
       </Box>

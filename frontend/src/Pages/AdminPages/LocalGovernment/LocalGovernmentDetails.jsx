@@ -2,11 +2,11 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Box, Typography, Button, Grid } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import { getProvinceById } from "./ProvinceApi"; // Make sure this API exists
+import { getLocalGovernmentById } from "./LocalGovernmentApi"; // Make sure this API exists
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const ProvinceDetails = () => {
+const LocalGovernmentDetails = () => {
   const { id } = useParams();
   const [news, setNews] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -14,10 +14,10 @@ const ProvinceDetails = () => {
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const response = await getProvinceById(id);
+        const response = await getLocalGovernmentById(id);
         setNews(response);
       } catch (error) {
-        console.error("Error fetching province news detail:", error);
+        console.error("Error fetching local government detail:", error);
       } finally {
         setLoading(false);
       }
@@ -42,7 +42,7 @@ const ProvinceDetails = () => {
   return (
     <Box className="p-6 md:p-10">
       {/* 🔙 Back Button */}
-      <Link to="/province" style={{ textDecoration: "none" }}>
+      <Link to="/localgovernment" style={{ textDecoration: "none" }}>
         <Button
           variant="outlined"
           size="small"
@@ -102,4 +102,4 @@ const ProvinceDetails = () => {
   );
 };
 
-export default ProvinceDetails;
+export default LocalGovernmentDetails;

@@ -13,16 +13,17 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-  CircularProgress,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getLifestyleById, editLifestyle } from "./LifestyleApi";
+import { getAdvertisementById, updateAdvertisement } from "./AdvertisementApi";
 import toast from "react-hot-toast";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const EditLifestyle = ({ onClose, id }) => {
+const EditAdvertisement = ({ onClose, id }) => {
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     topic: "",
     description: "",
@@ -31,56 +32,56 @@ const EditLifestyle = ({ onClose, id }) => {
     status: "active",
   });
 
-  const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  // Fetch lifestyle post by ID
-  const { data: fetchedPost, isLoading, refetch } = useQuery({
-    queryKey: ["lifestyle", id],
-    queryFn: async () => await getLifestyleById(id),
+  // ✅ Fetch advertisement by id
+  const { data: fetchedAd, isLoading, refetch } = useQuery({
+    queryKey: ["advertisement", id],
+    queryFn: async () => {
+      const res = await getAdvertisementById(id);
+      return res;
+    },
     enabled: !!id,
   });
 
-  // Prefill form
+  // ✅ Prefill form data once fetched
   useEffect(() => {
-    if (fetchedPost) {
+    if (fetchedAd) {
       setFormData({
-        topic: fetchedPost.topic || "",
-        description: fetchedPost.description || "",
-        date: fetchedPost.date ? fetchedPost.date.split("T")[0] : "",
-        image: fetchedPost.image || null,
-        status: fetchedPost.status || "active",
+        topic: fetchedAd.topic || "",
+        description: fetchedAd.description || "",
+        date: fetchedAd.date ? fetchedAd.date.split("T")[0] : "",
+        image: fetchedAd.image || null,
+        status: fetchedAd.status || "active",
       });
 
-      if (fetchedPost.image) {
-        setPreview(`${backendUrl}/images/${fetchedPost.image}`);
+      if (fetchedAd.image) {
+        setPreview(`${backendUrl}/images/${fetchedAd.image}`);
       }
     }
-  }, [fetchedPost]);
+  }, [fetchedAd]);
 
-  // Mutation for updating lifestyle post
-  const updateLifestyleMutation = useMutation({
-    mutationFn: (updatedPost) => {
+  // ✅ Mutation for updating advertisement
+  const updateAdMutation = useMutation({
+    mutationFn: (updatedAd) => {
       const token = localStorage.getItem("token");
-      return editLifestyle(id, updatedPost, token);
+      return updateAdvertisement(id, updatedAd, token);
     },
     onSuccess: () => {
-      toast.success("Lifestyle post updated successfully!");
+      toast.success("Advertisement updated successfully!");
       refetch();
-      onClose && onClose();
+      onClose();
     },
     onError: (error) => {
       console.error(error);
-      toast.error(error.response?.data?.error || "Failed to update lifestyle post.");
+      toast.error(error.response?.data?.error || "Failed to update advertisement.");
     },
   });
 
-  // Handle text/radio changes
+  // ✅ Handle text/radio changes
   const handleChange = ({ target: { name, value } }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle image upload
+  // ✅ Handle image upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -89,42 +90,51 @@ const EditLifestyle = ({ onClose, id }) => {
     }
   };
 
-  // Remove image
+  // ✅ Remove uploaded image
   const removeImage = () => {
     setFormData((prev) => ({ ...prev, image: null }));
     setPreview(null);
   };
 
-  // Handle form submit
+  // ✅ Handle form submission
   const handleEdit = (e) => {
     e.preventDefault();
     setLoading(true);
-    updateLifestyleMutation.mutate(formData);
+    updateAdMutation.mutate(formData);
     setLoading(false);
   };
 
   if (isLoading) {
     return (
-      <Typography sx={{ textAlign: "center", mt: 4 }}>Loading lifestyle post...</Typography>
+      <Typography variant="h6" sx={{ textAlign: "center", mt: 4 }}>
+        Loading advertisement data...
+      </Typography>
     );
   }
 
   return (
     <Grid>
       <DialogContent>
-        <Typography variant="h4" gutterBottom sx={{ mt: 4, mb: 4, textAlign: "center" }}>
-          Edit Lifestyle Post
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ mt: 4, mb: 4, textAlign: "center" }}
+        >
+          Edit Advertisement
         </Typography>
 
-        <Paper elevation={2} sx={{ maxWidth: 700, mx: "auto", p: 3, borderRadius: 2 }}>
+        <Paper
+          elevation={2}
+          sx={{ maxWidth: 700, mx: "auto", p: 3, borderRadius: 2 }}
+        >
           <form onSubmit={handleEdit}>
             <Grid container spacing={2}>
-              {/* Topic */}
+              {/* topic */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
                   name="topic"
-                  label="Topic"
+                  label="topic"
                   value={formData.topic}
                   onChange={handleChange}
                   size="small"
@@ -203,8 +213,16 @@ const EditLifestyle = ({ onClose, id }) => {
                     value={formData.status}
                     onChange={handleChange}
                   >
-                    <FormControlLabel value="active" control={<Radio color="primary" />} label="Active" />
-                    <FormControlLabel value="inactive" control={<Radio color="primary" />} label="Inactive" />
+                    <FormControlLabel
+                      value="active"
+                      control={<Radio color="primary" />}
+                      label="Active"
+                    />
+                    <FormControlLabel
+                      value="inactive"
+                      control={<Radio color="primary" />}
+                      label="Inactive"
+                    />
                   </RadioGroup>
                 </FormControl>
               </Grid>
@@ -226,13 +244,12 @@ const EditLifestyle = ({ onClose, id }) => {
 
               {/* Buttons */}
               <Grid item xs={12}>
-                <Box display="flex" justifyContent="center" gap={4} mt={2}>
+                <Box className="flex justify-center gap-4 mt-6">
                   <Button
                     variant="contained"
                     color="primary"
                     type="submit"
                     disabled={loading}
-                    startIcon={loading && <CircularProgress size={20} />}
                     sx={{
                       textTransform: "none",
                       px: 4,
@@ -243,10 +260,11 @@ const EditLifestyle = ({ onClose, id }) => {
                       "&:hover": { backgroundColor: "#115293" },
                     }}
                   >
-                    {loading ? "Updating..." : "Update Lifestyle"}
+                    {loading ? "Updating..." : "Update Advertisement"}
                   </Button>
+
                   <Button
-                    variant="contained"
+                    variant="outlined"
                     onClick={() => onClose && onClose(null)}
                     sx={{
                       textTransform: "none",
@@ -269,4 +287,4 @@ const EditLifestyle = ({ onClose, id }) => {
   );
 };
 
-export default EditLifestyle;
+export default EditAdvertisement;

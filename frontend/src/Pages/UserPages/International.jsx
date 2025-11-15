@@ -8,13 +8,22 @@ const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const timeAgo = (date) => {
   const now = new Date();
-  const diff = Math.floor((now - new Date(date)) / 1000);
+  const past = new Date(date);
+  const diffInSeconds = Math.floor((now - past) / 1000);
 
-  if (diff < 60) return `${diff} sec ago`;
-  if (diff < 3600) return `${Math.floor(diff / 60)} min ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)} hrs ago`;
-  return `${Math.floor(diff / 86400)} days ago`;
+  if (diffInSeconds < 60) return `${diffInSeconds} seconds ago`;
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes} minutes ago`;
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours} hours ago`;
+  const diffInDays = Math.floor(diffInHours / 24);
+  if (diffInDays < 30) return `${diffInDays} days ago`;
+  const diffInMonths = Math.floor(diffInDays / 30);
+  if (diffInMonths < 12) return `${diffInMonths} months ago`;
+  const diffInYears = Math.floor(diffInMonths / 12);
+  return `${diffInYears} years ago`;
 };
+
 
 const International = () => {
   const [news, setNews] = useState([]);

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Box, Card, CardContent, Typography, CircularProgress } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import Sidebar from "../../Components/Sidebar";
 import { getAllLocalGovernment } from "../AdminPages/LocalGovernment/LocalGovernmentApi";
 import { Link } from "react-router-dom";
+import LocalGovtSidebar from "../../Components/LocalGovtSidebar";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-// ✅ Improved timeAgo function (seconds → minutes → hours → days → months → years)
+// Time Ago Function
 const timeAgo = (date) => {
   const now = new Date();
   const past = new Date(date);
@@ -27,7 +27,7 @@ const timeAgo = (date) => {
   return `${years} years ago`;
 };
 
-// ✅ Helper function to limit description to 20 words
+// Short description
 const shortDescription = (text = "") => {
   const words = text.split(" ");
   if (words.length <= 20) return text;
@@ -39,34 +39,23 @@ const LocalGovernment = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchNews = async () => {
+    const fetch = async () => {
       try {
         const res = await getAllLocalGovernment();
-        const allNews = res.data || [];
-
-        // ✅ Filter only active items
-        const activeNews = allNews.filter((item) => {
-          const statusValue =
-            typeof item.status === "string"
-              ? item.status.toLowerCase()
-              : item.status;
-          return statusValue === "active" || statusValue === true;
+        const active = res.data.filter((item) => {
+          const s = typeof item.status === "string" ? item.status.toLowerCase() : item.status;
+          return s === "active" || s === true;
         });
 
-        // ✅ Sort newest first
-        const sortedNews = activeNews.sort(
-          (a, b) => new Date(b.date) - new Date(a.date)
-        );
-
-        setNews(sortedNews);
-      } catch (error) {
-        console.error("Error fetching local government news:", error);
+        const sorted = active.sort((a, b) => new Date(b.date) - new Date(a.date));
+        setNews(sorted);
+      } catch (err) {
+        console.error("Error fetching local government news:", err);
       } finally {
         setLoading(false);
       }
     };
-
-    fetchNews();
+    fetch();
   }, []);
 
   if (loading) {
@@ -77,7 +66,7 @@ const LocalGovernment = () => {
     );
   }
 
-  if (!news || news.length === 0) {
+  if (!news.length) {
     return (
       <Box className="flex justify-center items-center h-screen">
         <Typography variant="h6" color="text.secondary">
@@ -88,35 +77,49 @@ const LocalGovernment = () => {
   }
 
   const topNews = news[0];
-  const remainingNews = news.slice(1);
+  const remaining = news.slice(1);
 
   return (
     <Box className="flex w-full h-screen">
-      {/* LEFT SECTION */}
       <Box className="w-full p-4 overflow-y-auto">
-        {/* ✅ Featured (Top) News */}
+
+        {/* =============== TOP (FEATURED) NEWS ================= */}
         {topNews && (
           <Box className="mb-8 flex flex-col md:flex-row gap-4 items-start">
-            {/* LEFT: Image */}
+
+            {/* ❌ NOT CLICKABLE IMAGE */}
             <img
               src={`${backendUrl}/images/${topNews.image}`}
               alt={topNews.topic}
-              className="w-full md:w-1/2 h-80 md:h-90 object-cover rounded-lg"
+              className="w-full md:w-1/2 h-80 object-cover rounded-lg"
             />
 
-            {/* RIGHT: Time + Topic + Description */}
+            {/* RIGHT CONTENT */}
             <Box className="flex flex-col justify-between md:w-1/2">
               <Box className="flex items-center gap-2 text-gray-500 text-sm mt-auto mr-6 self-end">
                 <AccessTimeIcon sx={{ fontSize: 16 }} />
                 <Typography>{timeAgo(topNews.date)}</Typography>
               </Box>
 
-              <Typography variant="h4" className="font-bold pt-6">
+              {/* Topic (clickable) */}
+              <Typography
+                variant="h4"
+                className="font-bold pt-6 hover:underline cursor-pointer"
+                component={Link}
+                to={`/local-government/${topNews._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
                 {topNews.topic}
               </Typography>
 
+              {/* Description (clickable) */}
               {topNews.description && (
-                <Typography className="text-gray-700 text-base mb-2 line-clamp-3 pt-6">
+                <Typography
+                  className="text-gray-700 text-base mb-2 line-clamp-3 pt-6 hover:underline cursor-pointer"
+                  component={Link}
+                  to={`/local-government/${topNews._id}`}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
                   {shortDescription(topNews.description)}
                 </Typography>
               )}
@@ -124,9 +127,8 @@ const LocalGovernment = () => {
           </Box>
         )}
 
-        {/* ✅ Remaining news in smaller cards */}
+        {/* =============== REMAINING NEWS LIST =================== */}
         <Box sx={{ display: "flex", gap: 2, height: "calc(100vh - 32px)" }}>
-          {/* LEFT: News List */}
           <Box
             sx={{
               flex: 2,
@@ -136,7 +138,7 @@ const LocalGovernment = () => {
               gap: 2,
             }}
           >
-            {remainingNews.map((item) => (
+            {remaining.map((item) => (
               <Card key={item._id} sx={{ display: "flex", overflow: "hidden" }}>
                 <Box
                   component="img"
@@ -144,6 +146,7 @@ const LocalGovernment = () => {
                   alt={item.topic}
                   sx={{ width: 220, height: 140, objectFit: "cover" }}
                 />
+
                 <CardContent
                   sx={{
                     flex: 1,
@@ -152,40 +155,32 @@ const LocalGovernment = () => {
                     justifyContent: "center",
                   }}
                 >
+                  {/* Topic clickable */}
                   <Typography
                     variant="h6"
                     sx={{
                       fontWeight: 600,
                       mb: 1,
-                      lineHeight: 1.3,
                       cursor: "pointer",
                       "&:hover": { textDecoration: "underline" },
                     }}
                     component={Link}
-                    to={`/local/${item._id}`}
+                    to={`/local-government/${item._id}`}
                     style={{ textDecoration: "none", color: "inherit" }}
                   >
                     {item.topic}
                   </Typography>
 
+                  {/* Short description */}
                   <Typography
                     variant="body2"
-                    sx={{
-                      color: "text.secondary",
-                      mb: 1,
-                      lineHeight: 1.5,
-                    }}
+                    sx={{ color: "text.secondary", mb: 1 }}
                   >
                     {shortDescription(item.description)}
                   </Typography>
 
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      color: "text.secondary",
-                    }}
-                  >
+                  {/* Time */}
+                  <Box sx={{ display: "flex", alignItems: "center", color: "text.secondary" }}>
                     <AccessTimeIcon fontSize="small" sx={{ mr: 0.5 }} />
                     <Typography variant="caption">{timeAgo(item.date)}</Typography>
                   </Box>
@@ -194,7 +189,7 @@ const LocalGovernment = () => {
             ))}
           </Box>
 
-          {/* RIGHT: Sidebar */}
+          {/* RIGHT SIDEBAR */}
           <Box
             sx={{
               flex: 1,
@@ -203,7 +198,7 @@ const LocalGovernment = () => {
               p: 2,
             }}
           >
-            <Sidebar />
+            <LocalGovtSidebar />
           </Box>
         </Box>
       </Box>

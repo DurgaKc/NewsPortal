@@ -10,16 +10,14 @@ export const addEntertainment = async (data, token) => {
   form.append("status", data.status || "active");
   form.append("date", data.date);
 
-  // Images
+  // Use plural field names to match backend
   if (data.images && data.images.length > 0) {
-    data.images.forEach((img) => form.append("image", img));
+    data.images.forEach((img) => form.append("images", img));
   }
 
-  // Videos
   if (data.videos && data.videos.length > 0) {
-    data.videos.forEach((vid) => form.append("video", vid));
+    data.videos.forEach((vid) => form.append("videos", vid));
   }
-
   return axios.post(`${backendUrl}/entertainment/addEntertainment`, form, {
     headers: {
       Authorization: `Bearer ${token}`,

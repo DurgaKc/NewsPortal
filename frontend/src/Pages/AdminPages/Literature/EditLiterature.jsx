@@ -13,74 +13,79 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
-  CircularProgress,
+  MenuItem,
+  Select,
+  InputLabel,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getLifestyleById, editLifestyle } from "./LifestyleApi";
+import { getLiteratureById, updateLiterature } from "./LiteratureApi";
 import toast from "react-hot-toast";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const EditLifestyle = ({ onClose, id }) => {
+const EditLiterature = ({ onClose, id }) => {
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     topic: "",
+    author: "",
+    category: "Poem",
     description: "",
     date: "",
     image: null,
     status: "active",
   });
 
-  const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(false);
-
-  // Fetch lifestyle post by ID
-  const { data: fetchedPost, isLoading, refetch } = useQuery({
-    queryKey: ["lifestyle", id],
-    queryFn: async () => await getLifestyleById(id),
+  // ✅ Fetch literature by id
+  const { data: fetchedData, isLoading, refetch } = useQuery({
+    queryKey: ["literature", id],
+    queryFn: async () => getLiteratureById(id),
     enabled: !!id,
   });
 
-  // Prefill form
+  // ✅ Prefill form data once fetched
   useEffect(() => {
-    if (fetchedPost) {
+    if (fetchedData) {
       setFormData({
-        topic: fetchedPost.topic || "",
-        description: fetchedPost.description || "",
-        date: fetchedPost.date ? fetchedPost.date.split("T")[0] : "",
-        image: fetchedPost.image || null,
-        status: fetchedPost.status || "active",
+        topic: fetchedData.topic || "",
+        author: fetchedData.author || "",
+        category: fetchedData.category || "Poem",
+        description: fetchedData.description || "",
+        date: fetchedData.date ? fetchedData.date.split("T")[0] : "",
+        image: fetchedData.image || null,
+        status: fetchedData.status || "active",
       });
 
-      if (fetchedPost.image) {
-        setPreview(`${backendUrl}/images/${fetchedPost.image}`);
+      if (fetchedData.image) {
+        setPreview(`${backendUrl}/images/${fetchedData.image}`);
       }
     }
-  }, [fetchedPost]);
+  }, [fetchedData]);
 
-  // Mutation for updating lifestyle post
-  const updateLifestyleMutation = useMutation({
-    mutationFn: (updatedPost) => {
+  // ✅ Mutation for updating literature
+  const updateLiteratureMutation = useMutation({
+    mutationFn: (updatedData) => {
       const token = localStorage.getItem("token");
-      return editLifestyle(id, updatedPost, token);
+      return updateLiterature(id, updatedData, token);
     },
     onSuccess: () => {
-      toast.success("Lifestyle post updated successfully!");
+      toast.success("Literature updated successfully!");
       refetch();
-      onClose && onClose();
+      onClose();
     },
     onError: (error) => {
       console.error(error);
-      toast.error(error.response?.data?.error || "Failed to update lifestyle post.");
+      toast.error(error.response?.data?.error || "Failed to update literature.");
     },
   });
 
-  // Handle text/radio changes
+  // ✅ Handle text/select/radio changes
   const handleChange = ({ target: { name, value } }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle image upload
+  // ✅ Handle image upload
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -89,34 +94,43 @@ const EditLifestyle = ({ onClose, id }) => {
     }
   };
 
-  // Remove image
+  // ✅ Remove uploaded image
   const removeImage = () => {
     setFormData((prev) => ({ ...prev, image: null }));
     setPreview(null);
   };
 
-  // Handle form submit
+  // ✅ Handle form submission
   const handleEdit = (e) => {
     e.preventDefault();
     setLoading(true);
-    updateLifestyleMutation.mutate(formData);
+    updateLiteratureMutation.mutate(formData);
     setLoading(false);
   };
 
   if (isLoading) {
     return (
-      <Typography sx={{ textAlign: "center", mt: 4 }}>Loading lifestyle post...</Typography>
+      <Typography variant="h6" sx={{ textAlign: "center", mt: 4 }}>
+        Loading literature...
+      </Typography>
     );
   }
 
   return (
     <Grid>
       <DialogContent>
-        <Typography variant="h4" gutterBottom sx={{ mt: 4, mb: 4, textAlign: "center" }}>
-          Edit Lifestyle Post
+        <Typography
+          variant="h4"
+          gutterBottom
+          sx={{ mt: 4, mb: 4, textAlign: "center" }}
+        >
+          Edit Literature
         </Typography>
 
-        <Paper elevation={2} sx={{ maxWidth: 700, mx: "auto", p: 3, borderRadius: 2 }}>
+        <Paper
+          elevation={2}
+          sx={{ maxWidth: 700, mx: "auto", p: 3, borderRadius: 2 }}
+        >
           <form onSubmit={handleEdit}>
             <Grid container spacing={2}>
               {/* Topic */}
@@ -130,6 +144,37 @@ const EditLifestyle = ({ onClose, id }) => {
                   size="small"
                   required
                 />
+              </Grid>
+
+              {/* Author */}
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  name="author"
+                  label="Author"
+                  value={formData.author}
+                  onChange={handleChange}
+                  size="small"
+                />
+              </Grid>
+
+              {/* Category */}
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Category</InputLabel>
+                  <Select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleChange}
+                    label="Category"
+                    required
+                  >
+                    <MenuItem value="Poem">Poem</MenuItem>
+                    <MenuItem value="Story">Story</MenuItem>
+                    <MenuItem value="Ghazal">Ghazal</MenuItem>
+                    <MenuItem value="muktak">मुक्तक</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
 
               {/* Date */}
@@ -203,8 +248,16 @@ const EditLifestyle = ({ onClose, id }) => {
                     value={formData.status}
                     onChange={handleChange}
                   >
-                    <FormControlLabel value="active" control={<Radio color="primary" />} label="Active" />
-                    <FormControlLabel value="inactive" control={<Radio color="primary" />} label="Inactive" />
+                    <FormControlLabel
+                      value="active"
+                      control={<Radio color="primary" />}
+                      label="Active"
+                    />
+                    <FormControlLabel
+                      value="inactive"
+                      control={<Radio color="primary" />}
+                      label="Inactive"
+                    />
                   </RadioGroup>
                 </FormControl>
               </Grid>
@@ -226,25 +279,24 @@ const EditLifestyle = ({ onClose, id }) => {
 
               {/* Buttons */}
               <Grid item xs={12}>
-                <Box display="flex" justifyContent="center" gap={4} mt={2}>
+                <Box className="flex justify-center gap-4 mt-6">
                   <Button
                     variant="contained"
                     color="primary"
                     type="submit"
                     disabled={loading}
-                    startIcon={loading && <CircularProgress size={20} />}
                     sx={{
                       textTransform: "none",
                       px: 4,
                       borderRadius: 2,
                       fontWeight: 600,
-                      backgroundColor: "#1976d2",
-                      color: "white",
-                      "&:hover": { backgroundColor: "#115293" },
+                      backgroundColor: "#2B6EB5",
+                      "&:hover": { backgroundColor: "#1e5b9c" },
                     }}
                   >
-                    {loading ? "Updating..." : "Update Lifestyle"}
+                    {loading ? "Updating..." : "Update Literature"}
                   </Button>
+
                   <Button
                     variant="contained"
                     onClick={() => onClose && onClose(null)}
@@ -269,4 +321,4 @@ const EditLifestyle = ({ onClose, id }) => {
   );
 };
 
-export default EditLifestyle;
+export default EditLiterature;

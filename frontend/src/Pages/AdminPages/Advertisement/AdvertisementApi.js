@@ -2,18 +2,16 @@ import axios from "axios";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-// ✅ Add lifestyle post
-export const addLifestyle = async (data, token) => {
+// ✅ Add advertisement
+export const addAdvertisement = async (data, token) => {
   const form = new FormData();
   form.append("topic", data.topic);
   form.append("description", data.description);
   form.append("date", data.date);
-  form.append("status", data.status || "active");
-
-  // Single image
+  form.append("status", data.status);
   if (data.image) form.append("image", data.image);
 
-  return axios.post(`${backendUrl}/lifestyle/addLifestyle`, form, {
+  return axios.post(`${backendUrl}/advertisement/addAdvertisement`, form, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "multipart/form-data",
@@ -21,8 +19,8 @@ export const addLifestyle = async (data, token) => {
   });
 };
 
-// ✅ Edit lifestyle post
-export const editLifestyle = async (id, data, token) => {
+// ✅ Edit advertisement
+export const updateAdvertisement = async (id, data, token) => {
   try {
     const formData = new FormData();
 
@@ -31,15 +29,15 @@ export const editLifestyle = async (id, data, token) => {
     if (data.date) formData.append("date", data.date);
     if (data.status) formData.append("status", data.status);
 
-    // Handle image: new upload or keep existing
+    // Handle image: new file or existing filename
     if (data.image instanceof File) {
-      formData.append("image", data.image); // new image
+      formData.append("image", data.image); // New image uploaded
     } else if (data.image) {
-      formData.append("existingImage", data.image); // existing image
+      formData.append("existingImage", data.image); // Keep existing image
     }
 
     const response = await axios.put(
-      `${backendUrl}/lifestyle/editLifestyle/${id}`,
+      `${backendUrl}/advertisement/editAdvertisement/${id}`,
       formData,
       {
         headers: {
@@ -51,25 +49,25 @@ export const editLifestyle = async (id, data, token) => {
 
     return response.data;
   } catch (error) {
-    console.error("Error updating lifestyle post:", error);
+    console.error("Error updating advertisement:", error);
     throw error;
   }
 };
 
-// ✅ Delete lifestyle post
-export const deleteLifestyle = async (id, token) => {
-  return axios.delete(`${backendUrl}/lifestyle/deleteLifestyle/${id}`, {
+// ✅ Delete advertisement
+export const deleteAdvertisement = async (id, token) => {
+  return axios.delete(`${backendUrl}/advertisement/deleteAdvertisement/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 };
 
-// ✅ Get all lifestyle posts
-export const getAllLifestyles = async () => {
-  return axios.get(`${backendUrl}/lifestyle/getLifestyle`);
+// ✅ Get all advertisements
+export const getAllAdvertisements = async () => {
+  return axios.get(`${backendUrl}/advertisement/getAdvertisement`);
 };
 
-// ✅ Get single lifestyle post by ID
-export const getLifestyleById = async (id) => {
-  const response = await axios.get(`${backendUrl}/lifestyle/${id}`);
+// ✅ Get single advertisement
+export const getAdvertisementById = async (id) => {
+  const response = await axios.get(`${backendUrl}/advertisement/${id}`);
   return response.data;
 };
