@@ -1,3 +1,4 @@
+// middleware/upload.js
 const multer = require("multer");
 const path = require("path");
 
@@ -7,7 +8,7 @@ const storage = multer.diskStorage({
     const ext = path.extname(file.originalname).toLowerCase();
     if ([".jpg", ".jpeg", ".png", ".gif", ".webp"].includes(ext)) {
       cb(null, "./public/images"); // image folder
-    } else if ([".mp4", ".mov", ".avi", ".mkv"].includes(ext)) {
+    } else if ([".mp4", ".mov", ".avi", ".mkv", ".mp3"].includes(ext)) {
       cb(null, "./public/videos"); // video folder
     } else {
       cb(new Error("Only image or video files are allowed!"), false);
@@ -15,7 +16,7 @@ const storage = multer.diskStorage({
   },
 
   filename: function (req, file, cb) {
-    const filename = Date.now() + path.extname(file.originalname);
+    const filename = Date.now() + "-" + Math.round(Math.random() * 1E9) + path.extname(file.originalname);
     cb(null, filename);
   },
 });
@@ -23,7 +24,7 @@ const storage = multer.diskStorage({
 // ✅ File type filter
 const fileFilter = (req, file, cb) => {
   const ext = path.extname(file.originalname).toLowerCase();
-  const allowed = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".mp4", ".mov", ".avi", ".mkv"];
+  const allowed = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".mp4", ".mov", ".avi", ".mkv", ".mp3"];
 
   if (allowed.includes(ext)) {
     cb(null, true);
@@ -36,7 +37,7 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
-  limits: { fileSize: 200 * 1024 * 1024 }, // 200MB max (adjust as needed)
+  limits: { fileSize: 200 * 1024 * 1024 }, // 200MB max
 });
 
 module.exports = upload;

@@ -3,8 +3,8 @@ const Blog = require("../models/blog");
 // ✅ Get all blogs
 const getBlogs = async (req, res) => {
   try {
-    const posts = await Blog.find().sort({ date: -1 });
-    return res.json(posts);
+    const blogs = await Blog.find();
+    return res.json(blogs);
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -13,52 +13,67 @@ const getBlogs = async (req, res) => {
 // ✅ Get single blog
 const getBlog = async (req, res) => {
   try {
-    const post = await Blog.findById({_id:id});
-    if (!post) return res.status(404).json({ message: "Blog not found" });
-    return res.json(post);
+    const { id } = req.params;
+    const singleBlog = await Blog.findById({_id:id});
+    if (!singleBlog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
+    return res.json(singleBlog);
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// ✅ Add blog (image + video)
+// ✅ Add blog (with images and videos)
 const addBlog = async (req, res) => {
   try {
-    const { title, description, category, status } = req.body;
+    const { topic, description, date, status } = req.body;
 
-    if (!title || !description)
-      return res.status(400).json({ message: "Title and description are required" });
+    if (!topic || !description || !date || !status) {
+      return res.status(400).json({ message: "Required fields can't be empty" });
+    }
 
-    const images = req.files["image"] ? req.files["image"].map(f => f.filename) : [];
-    const videos = req.files["video"] ? req.files["video"].map(f => f.filename) : [];
+    // const images = req.files["images"] ? req.files["images"].map(file => file.filename) : [];
+    // const videos = req.files["videos"] ? req.files["videos"].map(file => file.filename) : [];
 
-    const newPost = await Blog.create({ title, description, category, status, images, videos });
-    res.status(201).json({ message: "Blog added successfully", data: newPost });
+    const newBlog = await Blog.create({
+      topic,
+      description,
+      date,
+      status,
+      video: req.file ? req.file.filename : null,
+    });
+
+    res.status(201).json({ message: "Blog added successfully", data: newBlog });
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// ✅ Edit blog
+// ✅ Edit blog (replace or keep images/videos)
 const editBlog = async (req, res) => {
   try {
-    const post = await Blog.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: "Blog not found" });
+    const blog = await Blog.findById(req.params.id);
+    if (!blog) return res.status(404).json({ message: "Blog not found" });
 
-    const images = req.files["image"] ? req.files["image"].map(f => f.filename) : post.images;
-    const videos = req.files["video"] ? req.files["video"].map(f => f.filename) : post.videos;
+    // const images = req.files["images"] 
+    //   ? req.files["images"].map(file => file.filename) 
+    //   : blog.images;
+
+    // const videos = req.files["videos"] 
+    //   ? req.files["videos"].map(file => file.filename) 
+    //   : blog.videos;
 
     const updatedData = {
-      title: req.body.title || post.title,
-      description: req.body.description || post.description,
-      category: req.body.category || post.category,
-      status: req.body.status || post.status,
-      images,
-      videos,
+      topic: req.body.topic || blog.topic,
+      description: req.body.description || blog.description,
+      date: req.body.date || blog.date,
+      status: req.body.status || blog.status,
+      video: req.file ? req.file.filename : interview.video,
     };
 
-    const updated = await Blog.findByIdAndUpdate(req.params.id, updatedData, { new: true });
-    return res.status(200).json({ message: "Blog updated successfully", data: updated });
+    const updatedBlog = await Blog.findByIdAndUpdate(req.params.id, updatedData, { new: true });
+    return res.status(200).json(updatedBlog);
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -67,12 +82,20 @@ const editBlog = async (req, res) => {
 // ✅ Delete blog
 const deleteBlog = async (req, res) => {
   try {
-    const post = await Blog.findByIdAndDelete(req.params.id);
-    if (!post) return res.status(404).json({ message: "Blog not found" });
+    const blog = await Blog.findByIdAndDelete(req.params.id);
+    if (!blog) {
+      return res.status(404).json({ message: "Blog not found" });
+    }
     return res.json({ message: "Blog deleted successfully" });
   } catch (error) {
     return res.status(500).json({ message: "Error deleting blog", error: error.message });
   }
 };
 
-module.exports = { getBlogs, getBlog, addBlog, editBlog, deleteBlog };
+module.exports = {
+  getBlogs,
+  getBlog,
+  addBlog,
+  editBlog,
+  deleteBlog,
+};

@@ -10,54 +10,62 @@ const getLifestyles = async (req, res) => {
   }
 };
 
-// ✅ Get single post
+// ✅ Get single lifestyle post
 const getLifestyle = async (req, res) => {
   try {
-    const post = await Lifestyle.findById(req.params.id);
-    if (!post) return res.status(404).json({ message: "Lifestyle post not found" });
-    return res.json(post);
+    const { id } = req.params;
+    const single = await Lifestyle.findById({_id:id});
+    if (!single) return res.status(404).json({ message: "Lifestyle post not found" });
+    return res.json(single);
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// ✅ Add lifestyle post
+// ✅ Add new lifestyle post (image only)
 const addLifestyle = async (req, res) => {
   try {
-    const { title, description, category, status } = req.body;
-    if (!title || !description)
-      return res.status(400).json({ message: "Title and description required" });
+    const { topic, description, date, status } = req.body;
 
-    const images = req.files["image"] ? req.files["image"].map(f => f.filename) : [];
-    const videos = req.files["video"] ? req.files["video"].map(f => f.filename) : [];
+    if (!topic || !description || !date || !status) {
+      return res.status(400).json({ message: "Required fields can't be empty" });
+    }
+    const image = req.file ? req.file.filename : null;
 
-    const newPost = await Lifestyle.create({ title, description, category, status, images, videos });
-    res.status(201).json({ message: "Lifestyle added successfully", data: newPost });
+    const newLifestyle = await Lifestyle.create({
+      topic,
+      description,
+      date,
+      status,
+      image
+    });
+
+    res.status(201).json({
+      message: "Lifestyle post added successfully",
+      data: newLifestyle,
+    });
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// ✅ Edit lifestyle post
+// ✅ Edit lifestyle post (image only)
 const editLifestyle = async (req, res) => {
   try {
     const post = await Lifestyle.findById(req.params.id);
     if (!post) return res.status(404).json({ message: "Lifestyle post not found" });
 
-    const images = req.files["image"] ? req.files["image"].map(f => f.filename) : post.images;
-    const videos = req.files["video"] ? req.files["video"].map(f => f.filename) : post.videos;
-
     const updatedData = {
-      title: req.body.title || post.title,
+      topic: req.body.topic || post.topic,
       description: req.body.description || post.description,
-      category: req.body.category || post.category,
+       date: req.body.date || post.date, 
       status: req.body.status || post.status,
-      images,
-      videos,
+      image: req.file ? req.file.filename : post.image,
     };
 
     const updated = await Lifestyle.findByIdAndUpdate(req.params.id, updatedData, { new: true });
-    return res.status(200).json({ message: "Lifestyle updated successfully", data: updated });
+
+    return res.status(200).json({ message: "Lifestyle post updated successfully", data: updated });
   } catch (error) {
     return res.status(500).json({ message: "Server error", error: error.message });
   }
@@ -68,10 +76,16 @@ const deleteLifestyle = async (req, res) => {
   try {
     const post = await Lifestyle.findByIdAndDelete(req.params.id);
     if (!post) return res.status(404).json({ message: "Lifestyle post not found" });
-    return res.json({ message: "Lifestyle deleted successfully" });
+    return res.json({ message: "Lifestyle post deleted successfully" });
   } catch (error) {
-    return res.status(500).json({ message: "Error deleting post", error: error.message });
+    return res.status(500).json({ message: "Error deleting lifestyle post", error: error.message });
   }
 };
 
-module.exports = { getLifestyles, getLifestyle, addLifestyle, editLifestyle, deleteLifestyle };
+module.exports = {
+  getLifestyles,
+  getLifestyle,
+  addLifestyle,
+  editLifestyle,
+  deleteLifestyle,
+};

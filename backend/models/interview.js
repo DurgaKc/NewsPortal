@@ -17,7 +17,7 @@ const interviewSchema = new mongoose.Schema(
       required: true,
     },
     video: {
-      type: String, // store filename of uploaded video
+      type: String, 
     },
     status: {
       type: String,

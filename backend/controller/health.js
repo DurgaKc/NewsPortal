@@ -56,7 +56,7 @@ const editHealth = async (req, res) => {
     const updatedData = {
       topic: req.body.topic || post.topic,
       description: req.body.description || post.description,
-      category: req.body.category || post.category,
+      date: req.body.date || post.date,
       status: req.body.status || post.status,
       image: req.file ? req.file.filename : post.image,
     };

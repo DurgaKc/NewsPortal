@@ -11,31 +11,9 @@ const {
 
 // ✅ Get all posts
 router.get("/getLifestyle", getLifestyles);
-
-// ✅ Get single post
 router.get("/:id", getLifestyle);
-
-// ✅ Add post (image + video)
-router.post(
-  "/addLifestyle",
-  upload.fields([
-    { name: "image", maxCount: 5 },
-    { name: "video", maxCount: 3 },
-  ]),
-  addLifestyle
-);
-
-// ✅ Edit post
-router.put(
-  "/editLifestyle/:id",
-  upload.fields([
-    { name: "image", maxCount: 5 },
-    { name: "video", maxCount: 3 },
-  ]),
-  editLifestyle
-);
-
-// ✅ Delete post
+router.post("/addLifestyle",upload.single("image"),addLifestyle);
+router.post("/editLifestyle/:id",upload.single("image"),editLifestyle);
 router.delete("/deleteLifestyle/:id", deleteLifestyle);
 
 module.exports = router;

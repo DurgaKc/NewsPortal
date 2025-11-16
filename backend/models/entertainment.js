@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const entertainmentSchema = new mongoose.Schema({
-  title: {
+  topic: {
     type: String,
     required: true,
     trim: true,
@@ -11,16 +11,12 @@ const entertainmentSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  category: {
-    type: String,
-    trim: true,
-  },
   images: {
-    type: [String], // store multiple image file paths
+    type: [String], 
     default: [],
   },
   videos: {
-    type: [String], // store multiple video file paths
+    type: [String],
     default: [],
   },
   date: {

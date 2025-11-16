@@ -25,10 +25,10 @@ const getEntertainment = async (req, res) => {
 // ✅ Add new entertainment post (image + video)
 const addEntertainment = async (req, res) => {
   try {
-    const { title, description, category, status } = req.body;
+    const { topic, description, date, status } = req.body;
 
-    if (!title || !description)
-      return res.status(400).json({ message: "Title and description are required" });
+    if (!topic || !description)
+      return res.status(400).json({ message: "topic and description are required" });
 
     const images = req.files["image"]
       ? req.files["image"].map((file) => file.filename)
@@ -41,6 +41,7 @@ const addEntertainment = async (req, res) => {
     const newEntertainment = await Entertainment.create({
       topic,
       description,
+      date,
       status,
       images,
       videos,
@@ -70,9 +71,8 @@ const editEntertainment = async (req, res) => {
       : entertainment.videos;
 
     const updatedData = {
-      title: req.body.title || entertainment.title,
+      topic: req.body.topic || entertainment.topic,
       description: req.body.description || entertainment.description,
-      category: req.body.category || entertainment.category,
       status: req.body.status || entertainment.status,
       images,
       videos,
