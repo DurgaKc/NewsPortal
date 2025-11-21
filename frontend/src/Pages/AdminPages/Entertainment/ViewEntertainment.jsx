@@ -119,7 +119,13 @@ const ViewEntertainment = () => {
       {/* Table Section */}
       <TableContainer
         component={Paper}
-        sx={{ maxWidth: 1200, mx: "auto", boxShadow: 3, borderRadius: 2, mb: 2 }}
+        sx={{
+          maxWidth: 1200,
+          mx: "auto",
+          boxShadow: 3,
+          borderRadius: 2,
+          mb: 2,
+        }}
       >
         <Table>
           <TableHead sx={{ backgroundColor: "rgb(43, 110, 181)" }}>
@@ -145,7 +151,9 @@ const ViewEntertainment = () => {
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
                     {page * rowsPerPage + index + 1}
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}>
+                  <TableCell
+                    sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}
+                  >
                     {item.topic}
                   </TableCell>
                   <TableCell>
@@ -153,11 +161,31 @@ const ViewEntertainment = () => {
                       <span>{trimDescription(item.description)}</span>
                     </Tooltip>
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2" }}>{item.date}</TableCell>
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
-                    {item.status}
+                    {item.date}
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2", display: "flex" }}>
+                  <TableCell sx={{ border: "1px solid #c2c2c2" }}>
+                    <span
+                      style={{
+                        padding: "4px 10px",
+                        borderRadius: "8px",
+                        color: "white",
+                        backgroundColor:
+                          item.status?.toString().trim().toLowerCase() ===
+                          "active"
+                            ? "green"
+                            : "red",
+
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item.status}
+                    </span>
+                  </TableCell>
+                  <TableCell
+                    sx={{ border: "1px solid #c2c2c2", display: "flex" }}
+                  >
                     <Button
                       size="small"
                       variant="contained"
@@ -209,12 +237,18 @@ const ViewEntertainment = () => {
 
       {/* Edit Dialog */}
       <Dialog open={openEditDialog} onClose={handleCloseDialog}>
-        <EditEntertainment id={selectedEntertainmentId} onClose={handleCloseDialog} />
+        <EditEntertainment
+          id={selectedEntertainmentId}
+          onClose={handleCloseDialog}
+        />
       </Dialog>
 
       {/* Delete Dialog */}
       <Dialog open={openDeleteDialog} onClose={handleCloseDialog}>
-        <DeleteEntertainment id={selectedEntertainmentId} onClose={handleCloseDialog} />
+        <DeleteEntertainment
+          id={selectedEntertainmentId}
+          onClose={handleCloseDialog}
+        />
       </Dialog>
     </Grid>
   );

@@ -1,230 +1,224 @@
 import React, { useEffect, useState } from "react";
 import {
   Box,
-  Button,
-  DialogContent,
-  Grid,
-  Paper,
-  TextField,
+  Card,
+  CardContent,
   Typography,
-  IconButton,
-  FormControl,
-  FormControlLabel,
-  FormLabel,
-  Radio,
-  RadioGroup,
   CircularProgress,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import { editLifestyle, getLifestyleById } from "../AdminPages/Lifestyle/LifestyleApi";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import { Link } from "react-router-dom";
+import LocalGovtSidebar from "../../Components/LocalGovtSidebar";
+import { getAllLifestyles } from "../AdminPages/Lifestyle/LifestyleApi";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-const EditLifestyle = ({ onClose, id }) => {
-  const [formData, setFormData] = useState({
-    topic: "",
-    description: "",
-    date: "",
-    image: null,
-    status: "active",
-  });
+// ✅ timeAgo (seconds → minutes → hours → days → months → years)
+const timeAgo = (date) => {
+  const now = new Date();
+  const past = new Date(date);
+  const diff = Math.floor((now - past) / 1000);
 
-  const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const mins = Math.floor(diff / 60);
+  const hrs = Math.floor(mins / 60);
+  const days = Math.floor(hrs / 24);
+  const months = Math.floor(days / 30);
+  const years = Math.floor(months / 12);
 
-  // Fetch data
-  const { data: fetchedPost, isLoading } = useQuery({
-    queryKey: ["lifestyle", id],
-    queryFn: () => getLifestyleById(id),
-    enabled: !!id,
-  });
+  if (diff < 60) return `${diff} sec ago`;
+  if (mins < 60) return `${mins} min ago`;
+  if (hrs < 24) return `${hrs} hrs ago`;
+  if (days < 30) return `${days} days ago`;
+  if (months < 12) return `${months} months ago`;
+  return `${years} years ago`;
+};
 
-  // Prefill data
+// ✅ Helper: show only first 20 words
+const shortDescription = (text = "") => {
+  const words = text.split(" ");
+  if (words.length <= 20) return text;
+  return words.slice(0, 20).join(" ") + "...";
+};
+
+const Lifestyle = () => {
+  const [lifestyleData, setLifestyleData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
-    if (fetchedPost) {
-      setFormData({
-        topic: fetchedPost.topic,
-        description: fetchedPost.description,
-        date: fetchedPost.date?.split("T")[0],
-        image: fetchedPost.image,
-        status: fetchedPost.status,
-      });
+    const fetchLifestyle = async () => {
+      try {
+        const res = await getAllLifestyles();
+        const allNews = res.data || [];
 
-      if (fetchedPost.image) {
-        setPreview(`${backendUrl}/images/${fetchedPost.image}`);
+        // ✅ Only show active items
+        const activeNews = allNews.filter((item) => {
+          const statusValue =
+            typeof item.status === "string"
+              ? item.status.toLowerCase()
+              : item.status;
+          return statusValue === "active" || statusValue === true;
+        });
+
+        // ✅ Sort newest → oldest
+        const sorted = activeNews.sort(
+          (a, b) => new Date(b.date) - new Date(a.date)
+        );
+
+        setLifestyleData(sorted);
+      } catch (err) {
+        console.error("Error fetching lifestyle news:", err);
+      } finally {
+        setLoading(false);
       }
-    }
-  }, [fetchedPost]);
+    };
 
-  // Mutation
-  const mutation = useMutation({
-    mutationFn: async (data) => {
-      const token = localStorage.getItem("token");
-      return await editLifestyle(id, data, token);
-    },
-    onSuccess: () => {
-      toast.success("Lifestyle updated successfully!");
-      onClose && onClose();
-    },
-    onError: (err) => {
-      console.log(err);
-      toast.error("Failed to update lifestyle.");
-    },
-  });
+    fetchLifestyle();
+  }, []);
 
-  // Handle text inputs
-  const handleChange = (e) => {
-    setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
-  };
-
-  // Handle image
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData((p) => ({ ...p, image: file }));
-      setPreview(URL.createObjectURL(file));
-    }
-  };
-
-  const removeImage = () => {
-    setFormData((p) => ({ ...p, image: null }));
-    setPreview(null);
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setLoading(true);
-    mutation.mutate(formData, {
-      onSettled: () => setLoading(false),
-    });
-  };
-
-  if (isLoading) {
-    return <Typography textAlign="center">Loading...</Typography>;
+  if (loading) {
+    return (
+      <Box className="flex justify-center items-center h-screen">
+        <CircularProgress />
+      </Box>
+    );
   }
 
-  return (
-    <Grid>
-      <DialogContent>
-        <Typography variant="h4" textAlign="center" sx={{ mb: 3 }}>
-          Edit Lifestyle Post
+  if (!lifestyleData || lifestyleData.length === 0) {
+    return (
+      <Box className="flex justify-center items-center h-screen">
+        <Typography variant="h6" color="text.secondary">
+          No lifestyle news available.
         </Typography>
+      </Box>
+    );
+  }
 
-        <Paper sx={{ p: 3, maxWidth: 700, mx: "auto" }}>
-          <form onSubmit={handleSubmit}>
-            <Grid container spacing={2}>
+  const topNews = lifestyleData[0];
+  const remaining = lifestyleData.slice(1);
 
-              {/* Topic */}
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Topic"
-                  name="topic"
-                  value={formData.topic}
-                  onChange={handleChange}
-                  size="small"
+  return (
+    <Box className="flex w-full h-screen">
+      {/* MAIN CONTENT */}
+      <Box className="w-full p-4 overflow-y-auto">
+        {/* ✅ FEATURED LIFESTYLE NEWS */}
+        {topNews && (
+          <Box className="mb-8 flex flex-col md:flex-row gap-4 items-start">
+            {/* LEFT: Image */}
+            <img
+              src={`${backendUrl}/images/${topNews.image}`}
+              alt={topNews.topic}
+              className="w-full md:w-1/2 h-80 md:h-90 object-cover rounded-lg"
+            />
+
+            {/* RIGHT: Text content */}
+            <Box className="flex flex-col justify-between md:w-1/2">
+              <Box className="flex items-center gap-2 text-gray-500 text-sm mt-auto mr-6 self-end">
+                <AccessTimeIcon sx={{ fontSize: 16 }} />
+                <Typography>{timeAgo(topNews.date)}</Typography>
+              </Box>
+              <Link
+                to={`/lifestyle/${topNews._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <Typography variant="h4" className="font-bold pt-6">
+                  {topNews.topic}
+                </Typography>
+              </Link>
+
+              {topNews.description && (
+                <Typography className="text-gray-700 text-base mb-2 line-clamp-3 pt-6">
+                  {shortDescription(topNews.description)}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+        )}
+
+        {/* ✅ REMAINING LIFESTYLE NEWS */}
+        <Box sx={{ display: "flex", gap: 2, height: "calc(100vh - 32px)" }}>
+          {/* LEFT: Lifestyle list */}
+          <Box
+            sx={{
+              flex: 2,
+              overflowY: "auto",
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            {remaining.map((item) => (
+              <Card key={item._id} sx={{ display: "flex", overflow: "hidden" }}>
+                <Box
+                  component="img"
+                  src={`${backendUrl}/images/${item.image}`}
+                  alt={item.topic}
+                  sx={{ width: 220, height: 140, objectFit: "cover" }}
                 />
-              </Grid>
+                <CardContent
+                  sx={{
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontWeight: 600,
+                      mb: 1,
+                      lineHeight: 1.3,
+                      cursor: "pointer",
+                      "&:hover": { textDecoration: "underline" },
+                    }}
+                    component={Link}
+                    to={`/lifestyle/${item._id}`}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                    {item.topic}
+                  </Typography>
 
-              {/* Date */}
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  type="date"
-                  label="Date"
-                  name="date"
-                  value={formData.date}
-                  onChange={handleChange}
-                  InputLabelProps={{ shrink: true }}
-                  size="small"
-                />
-              </Grid>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "text.secondary",
+                      mb: 1,
+                      lineHeight: 1.5,
+                    }}
+                  >
+                    {shortDescription(item.description)}
+                  </Typography>
 
-              {/* Image */}
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  type="file"
-                  fullWidth
-                  size="small"
-                  name="image"
-                  onChange={handleImageChange}
-                  InputLabelProps={{ shrink: true }}
-                />
-
-                {preview && (
-                  <Box mt={1} position="relative">
-                    <IconButton
-                      size="small"
-                      onClick={removeImage}
-                      sx={{ position: "absolute", top: 4, right: 4 }}
-                    >
-                      <CloseIcon />
-                    </IconButton>
-                    <img
-                      src={preview}
-                      alt="preview"
-                      style={{ width: "100%", borderRadius: 8 }}
-                    />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      color: "text.secondary",
+                    }}
+                  >
+                    <AccessTimeIcon fontSize="small" sx={{ mr: 0.5 }} />
+                    <Typography variant="caption">{timeAgo(item.date)}</Typography>
                   </Box>
-                )}
-              </Grid>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
 
-              {/* Status */}
-              <Grid item xs={12} sm={6}>
-                <FormControl>
-                  <FormLabel>Status</FormLabel>
-                  <RadioGroup
-                    row
-                    name="status"
-                    value={formData.status}
-                    onChange={handleChange}
-                  >
-                    <FormControlLabel value="active" control={<Radio />} label="Active" />
-                    <FormControlLabel value="inactive" control={<Radio />} label="Inactive" />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-
-              {/* Description */}
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  multiline
-                  rows={4}
-                  label="Description"
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  size="small"
-                />
-              </Grid>
-
-              {/* Buttons */}
-              <Grid item xs={12}>
-                <Box display="flex" justifyContent="center" gap={3}>
-                  <Button
-                    variant="contained"
-                    type="submit"
-                    disabled={loading}
-                    startIcon={loading && <CircularProgress size={20} />}
-                  >
-                    {loading ? "Updating..." : "Update"}
-                  </Button>
-
-                  <Button variant="contained" color="error" onClick={() => onClose()}>
-                    Cancel
-                  </Button>
-                </Box>
-              </Grid>
-
-            </Grid>
-          </form>
-        </Paper>
-      </DialogContent>
-    </Grid>
+          {/* RIGHT: Sidebar */}
+          <Box
+            sx={{
+              flex: 1,
+              overflowY: "auto",
+              borderLeft: "1px solid #ccc",
+              p: 2,
+            }}
+          >
+            <LocalGovtSidebar />
+          </Box>
+        </Box>
+      </Box>
+    </Box>
   );
 };
 
-export default EditLifestyle;
+export default Lifestyle;

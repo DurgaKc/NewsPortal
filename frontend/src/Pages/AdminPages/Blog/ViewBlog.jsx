@@ -129,7 +129,7 @@ const ViewBlog = () => {
         <Table>
           <TableHead sx={{ backgroundColor: "rgb(43, 110, 181)" }}>
             <TableRow>
-              {["S.No", "topic", "Description", "Date", "Action"].map(
+              {["S.No", "topic", "Description", "Date", "Status", "Action"].map(
                 (heading) => (
                   <TableCell
                     key={heading}
@@ -163,18 +163,41 @@ const ViewBlog = () => {
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
                     {item.date?.split("T")[0]}
                   </TableCell>
-                 
+                  <TableCell sx={{ border: "1px solid #c2c2c2" }}>
+                    <span
+                      style={{
+                        padding: "4px 10px",
+                        borderRadius: "8px",
+                        color: "white",
+                        backgroundColor:
+                          item.status?.toString().trim().toLowerCase() ===
+                          "active"
+                            ? "green"
+                            : "red",
+
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item.status}
+                    </span>
+                  </TableCell>
                   <TableCell
                     sx={{ border: "1px solid #c2c2c2", display: "flex" }}
                   >
                     <Button
                       size="small"
                       variant="contained"
-                      sx={{ mx: 0.5, my: 0.5, textTransform: "none", backgroundColor: "#1976d2", // Blue
-                      color: "white",
-                      "&:hover": {
-                        backgroundColor: "#115293", // Darker blue on hover
-                      }, }}
+                      sx={{
+                        mx: 0.5,
+                        my: 0.5,
+                        textTransform: "none",
+                        backgroundColor: "#1976d2", // Blue
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#115293", // Darker blue on hover
+                        },
+                      }}
                       onClick={() => handleEdit(item._id)}
                     >
                       Edit
@@ -185,11 +208,11 @@ const ViewBlog = () => {
                       sx={{
                         mx: 0.5,
                         my: 0.5,
-                         backgroundColor: "#d32f2f", // red
-                      color: "white",
-                      "&:hover": {
-                        backgroundColor: "#b71c1c", // dark red on hover
-                      },
+                        backgroundColor: "#d32f2f", // red
+                        color: "white",
+                        "&:hover": {
+                          backgroundColor: "#b71c1c", // dark red on hover
+                        },
                         textTransform: "none",
                       }}
                       onClick={() => handleDelete(item._id)}

@@ -53,7 +53,7 @@ const ViewAdvertisement = () => {
   const handleCloseDialog = () => {
     setOpenEditDialog(false);
     setOpenDeleteDialog(false);
-    fetchAdvertisements(); 
+    fetchAdvertisements();
   };
 
   const handleEdit = (id) => {
@@ -94,7 +94,10 @@ const ViewAdvertisement = () => {
 
       {/* Add Button */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2, mr: 12 }}>
-        <Link to="/admin/advertisement/addadvertisement" style={{ textDecoration: "none" }}>
+        <Link
+          to="/admin/advertisement/addadvertisement"
+          style={{ textDecoration: "none" }}
+        >
           <Button
             variant="outlined"
             startIcon={<IoAddSharp />}
@@ -117,19 +120,27 @@ const ViewAdvertisement = () => {
       {/* Table Section */}
       <TableContainer
         component={Paper}
-        sx={{ maxWidth: 1100, mx: "auto", boxShadow: 3, borderRadius: 2, mb: 2 }}
+        sx={{
+          maxWidth: 1100,
+          mx: "auto",
+          boxShadow: 3,
+          borderRadius: 2,
+          mb: 2,
+        }}
       >
         <Table>
           <TableHead sx={{ backgroundColor: "rgb(43, 110, 181)" }}>
             <TableRow>
-              {["S.No", "Topic", "Description", "Date", "Action"].map((heading) => (
-                <TableCell
-                  key={heading}
-                  sx={{ color: "white", border: "1px solid #c2c2c2", p: 1 }}
-                >
-                  {heading}
-                </TableCell>
-              ))}
+              {["S.No", "Topic", "Description", "Date", "Status", "Action"].map(
+                (heading) => (
+                  <TableCell
+                    key={heading}
+                    sx={{ color: "white", border: "1px solid #c2c2c2", p: 1 }}
+                  >
+                    {heading}
+                  </TableCell>
+                )
+              )}
             </TableRow>
           </TableHead>
 
@@ -141,7 +152,9 @@ const ViewAdvertisement = () => {
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
                     {page * rowsPerPage + index + 1}
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}>
+                  <TableCell
+                    sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}
+                  >
                     {item.topic}
                   </TableCell>
                   <TableCell>
@@ -149,8 +162,31 @@ const ViewAdvertisement = () => {
                       <span>{trimDescription(item.description)}</span>
                     </Tooltip>
                   </TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2" }}>{item.date}</TableCell>
-                  <TableCell sx={{ border: "1px solid #c2c2c2", display: "flex" }}>
+                  <TableCell sx={{ border: "1px solid #c2c2c2" }}>
+                    {item.date}
+                  </TableCell>
+                  <TableCell sx={{ border: "1px solid #c2c2c2" }}>
+                    <span
+                      style={{
+                        padding: "4px 10px",
+                        borderRadius: "8px",
+                        color: "white",
+                        backgroundColor:
+                          item.status?.toString().trim().toLowerCase() ===
+                          "active"
+                            ? "green"
+                            : "red",
+
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item.status}
+                    </span>
+                  </TableCell>
+                  <TableCell
+                    sx={{ border: "1px solid #c2c2c2", display: "flex" }}
+                  >
                     <Button
                       size="small"
                       variant="outlined"

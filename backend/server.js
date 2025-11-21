@@ -33,6 +33,7 @@ app.use("/blog", require("./routes/blog"));
 app.use("/lifestyle", require("./routes/lifestyle"));
 app.use("/literature", require("./routes/literature"));
 app.use("/advertisement", require("./routes/advertisement"));
+app.use("/latestnews", require("./routes/latestnews"));
 
 
 app.listen(PORT,(err)=>{

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import axios from "axios";
 import {
   Box,
   Button,
@@ -12,10 +11,9 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useMutation } from "@tanstack/react-query";
 import toast from "react-hot-toast";
+import { changePassword } from "./PasswordChangeApi";
 
-const backendUrl = import.meta.env.VITE_BACKEND_URL;
-
-export default function PasswordChange() {
+export default function PasswordChange({ userId }) {
   const [values, setValues] = useState({
     currentPassword: "",
     newPassword: "",
@@ -29,15 +27,8 @@ export default function PasswordChange() {
 
   // ✅ React Query mutation
   const mutation = useMutation({
-    mutationFn: async ({ oldPassword, newPassword }) => {
-      const token = localStorage.getItem("token");
-      const res = await axios.put(
-        `${backendUrl}/changePassword`,
-        { oldPassword, newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      return res.data;
-    },
+    mutationFn: ({ oldPassword, newPassword }) =>
+      changePassword({ userId, oldPassword, newPassword }),
     onSuccess: (data) => {
       toast.success(data.message || "Password changed successfully!");
       setValues({
@@ -66,16 +57,11 @@ export default function PasswordChange() {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!values.currentPassword)
-      newErrors.currentPassword = "Current password is required";
-    if (!values.newPassword)
-      newErrors.newPassword = "New password is required";
-    else if (values.newPassword.length < 6)
-      newErrors.newPassword = "Password must be at least 6 characters";
-    if (!values.confirmPassword)
-      newErrors.confirmPassword = "Please confirm your password";
-    else if (values.newPassword !== values.confirmPassword)
-      newErrors.confirmPassword = "Passwords do not match";
+    if (!values.currentPassword) newErrors.currentPassword = "Current password is required";
+    if (!values.newPassword) newErrors.newPassword = "New password is required";
+    else if (values.newPassword.length < 6) newErrors.newPassword = "Password must be at least 6 characters";
+    if (!values.confirmPassword) newErrors.confirmPassword = "Please confirm your password";
+    else if (values.newPassword !== values.confirmPassword) newErrors.confirmPassword = "Passwords do not match";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -85,10 +71,7 @@ export default function PasswordChange() {
     e.preventDefault();
     if (!validateForm()) return;
 
-    mutation.mutate({
-      oldPassword: values.currentPassword,
-      newPassword: values.newPassword,
-    });
+    mutation.mutate({ oldPassword: values.currentPassword, newPassword: values.newPassword });
   };
 
   const renderPasswordField = (label, valueProp, showProp) => (
@@ -103,10 +86,7 @@ export default function PasswordChange() {
       InputProps={{
         endAdornment: (
           <InputAdornment position="end">
-            <IconButton
-              onClick={() => handleClickShowPassword(showProp)}
-              edge="end"
-            >
+            <IconButton onClick={() => handleClickShowPassword(showProp)} edge="end">
               {values[showProp] ? <VisibilityOff /> : <Visibility />}
             </IconButton>
           </InputAdornment>
@@ -142,13 +122,7 @@ export default function PasswordChange() {
       <Button
         type="submit"
         variant="contained"
-        sx={{
-          mt: 2,
-          textTransform: "none",
-                    borderColor: "#2B6EB5",
-                    "&:hover": { borderColor: "#1e5b9c" },
-          borderRadius: "10px",
-        }}
+        sx={{ mt: 2, textTransform: "none", backgroundColor: "#5fb298", borderRadius: "10px" }}
         disabled={mutation.isLoading}
         startIcon={mutation.isLoading ? <CircularProgress size={20} /> : null}
       >

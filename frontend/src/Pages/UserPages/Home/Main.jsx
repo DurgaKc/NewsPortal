@@ -1,12 +1,17 @@
-import React from 'react'
-import RecentNews from './RecentNews'
-import Heading from './Heading'
-import { Box, Grid } from '@mui/material'
+import React from 'react';
+import RecentNews from './RecentNews';
+import Heading from './Heading';
+import { Box, Grid } from '@mui/material';
+import LatestNews from './LatestNews'; // Import the LatestNews component
+import PopupBanner from '../../../Components/PopupBanner';
 
 const Main = () => {
   return (
     <Box sx={{ p: 1, flexGrow: 1 }}>
-      <Grid container>
+      <PopupBanner/>      
+      <LatestNews />
+      
+      <Grid container spacing={2}>
         {/* Left side: RecentNews */}
         <Grid item xs={12} md={7.5}>
           <RecentNews />
@@ -18,7 +23,7 @@ const Main = () => {
         </Grid>
       </Grid>
     </Box>
-  )
-}
+  );
+};
 
-export default Main
+export default Main;

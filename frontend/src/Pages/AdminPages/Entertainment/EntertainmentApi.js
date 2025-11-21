@@ -10,14 +10,9 @@ export const addEntertainment = async (data, token) => {
   form.append("status", data.status || "active");
   form.append("date", data.date);
 
-  // Use plural field names to match backend
-  if (data.images && data.images.length > 0) {
-    data.images.forEach((img) => form.append("images", img));
-  }
+   // Single image
+  if (data.image) form.append("image", data.image);
 
-  if (data.videos && data.videos.length > 0) {
-    data.videos.forEach((vid) => form.append("videos", vid));
-  }
   return axios.post(`${backendUrl}/entertainment/addEntertainment`, form, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -36,26 +31,11 @@ export const editEntertainment = async (id, data, token) => {
     if (data.status) formData.append("status", data.status);
     if (data.date) formData.append("date", data.date);
 
-    // Handle images
-    if (data.images && data.images.length > 0) {
-      data.images.forEach((img) => {
-        if (img instanceof File) {
-          formData.append("image", img);
-        } else {
-          formData.append("existingImages", img);
-        }
-      });
-    }
-
-    // Handle videos
-    if (data.videos && data.videos.length > 0) {
-      data.videos.forEach((vid) => {
-        if (vid instanceof File) {
-          formData.append("video", vid);
-        } else {
-          formData.append("existingVideos", vid);
-        }
-      });
+ // Handle image: new upload or keep existing
+    if (data.image instanceof File) {
+      formData.append("image", data.image); // new image
+    } else if (data.image) {
+      formData.append("existingImage", data.image); // existing image
     }
 
     const response = await axios.put(

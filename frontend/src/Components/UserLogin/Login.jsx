@@ -22,7 +22,7 @@ export default function Login({ onClose }) {
 
   const [values, setValues] = useState({
     email:"news112@gmail.com",
-    password: "NEWS112",
+    password: "NEWS1122",
   });
   const [showPassword, setShowPassword] = useState(false);
 

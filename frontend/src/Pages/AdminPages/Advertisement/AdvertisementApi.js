@@ -71,3 +71,9 @@ export const getAdvertisementById = async (id) => {
   const response = await axios.get(`${backendUrl}/advertisement/${id}`);
   return response.data;
 };
+
+// ✅ Get all active popup advertisements
+export const getPopupAdvertisements = async () => {
+  const response = await axios.get(`${backendUrl}/advertisement/popups`);
+  return response.data;
+};

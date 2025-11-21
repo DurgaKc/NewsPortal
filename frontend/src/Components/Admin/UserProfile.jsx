@@ -4,11 +4,12 @@ import { motion } from "framer-motion";
 
 export default function UserProfile() {
   const user = {
-    restaurantName: "Sky Deck",
-    description: "A cozy rooftop restaurant with a beautiful view.",
-    contactNumber: "9876543210",
-    location: "Kathmandu, Nepal",
-    email: "sky112@gmail.com",
+    Name: "Sutra Sanchar",
+    description: "Sanamdristi Media Pvt.Ltd.",
+    RegNo:"353432/81/82 OCR Nepal",
+    contactNumber: "9868664821",
+    location: "Musikot, Rukum(west) Nepal",
+    email: "Sutrasanckar@gmail.com",
   };
 
   return (
@@ -49,7 +50,7 @@ export default function UserProfile() {
               color: "#1e293b",
             }}
           >
-            {user.restaurantName}
+            {user.Name}
           </Typography>
 
           {/* Description */}

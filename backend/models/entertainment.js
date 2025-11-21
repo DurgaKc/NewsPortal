@@ -11,13 +11,8 @@ const entertainmentSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
-  images: {
-    type: [String], 
-    default: [],
-  },
-  videos: {
-    type: [String],
-    default: [],
+ image: {
+    type: String,
   },
   date: {
       type: String,

@@ -133,7 +133,7 @@ const ViewLocalGovernment = () => {
         <Table>
           <TableHead sx={{ backgroundColor: "rgb(43, 110, 181)" }}>
             <TableRow>
-              {["S.No", "Topic", "Description", "Date", "Action"].map(
+              {["S.No", "Topic", "Description", "Date", "Status", "Action"].map(
                 (heading) => (
                   <TableCell
                     key={heading}
@@ -166,6 +166,25 @@ const ViewLocalGovernment = () => {
                   </TableCell>
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
                     {item.date}
+                  </TableCell>
+                  <TableCell sx={{ border: "1px solid #c2c2c2" }}>
+                    <span
+                      style={{
+                        padding: "4px 10px",
+                        borderRadius: "8px",
+                        color: "white",
+                        backgroundColor:
+                          item.status?.toString().trim().toLowerCase() ===
+                          "active"
+                            ? "green"
+                            : "red",
+
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item.status}
+                    </span>
                   </TableCell>
                   <TableCell
                     sx={{

@@ -93,7 +93,10 @@ const ViewLiterature = () => {
 
       {/* Add Button */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2, mr: 12 }}>
-        <Link to="/admin/literature/addliterature" style={{ textDecoration: "none" }}>
+        <Link
+          to="/admin/literature/addliterature"
+          style={{ textDecoration: "none" }}
+        >
           <Button
             variant="contained"
             startIcon={<IoAddSharp />}
@@ -127,16 +130,23 @@ const ViewLiterature = () => {
         <Table>
           <TableHead sx={{ backgroundColor: "rgb(43, 110, 181)" }}>
             <TableRow>
-              {["S.No", "Topic", "Category", "Author", "Description", "Date", "Action"].map(
-                (heading) => (
-                  <TableCell
-                    key={heading}
-                    sx={{ color: "white", border: "1px solid #c2c2c2", p: 1 }}
-                  >
-                    {heading}
-                  </TableCell>
-                )
-              )}
+              {[
+                "S.No",
+                "Topic",
+                "Category",
+                "Author",
+                "Description",
+                "Date",
+                "Status",
+                "Action",
+              ].map((heading) => (
+                <TableCell
+                  key={heading}
+                  sx={{ color: "white", border: "1px solid #c2c2c2", p: 1 }}
+                >
+                  {heading}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
 
@@ -150,7 +160,9 @@ const ViewLiterature = () => {
                   </TableCell>
 
                   {/* Topic */}
-                  <TableCell sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}>
+                  <TableCell
+                    sx={{ border: "1px solid #c2c2c2", fontWeight: 500 }}
+                  >
                     {item.topic}
                   </TableCell>
 
@@ -173,11 +185,32 @@ const ViewLiterature = () => {
 
                   {/* Date */}
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
-                    {item.date}
+                    {item.date?.split("T")[0]}
+                  </TableCell>
+                  <TableCell sx={{ border: "1px solid #c2c2c2" }}>
+                    <span
+                      style={{
+                        padding: "4px 10px",
+                        borderRadius: "8px",
+                        color: "white",
+                        backgroundColor:
+                          item.status?.toString().trim().toLowerCase() ===
+                          "active"
+                            ? "green"
+                            : "red",
+
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item.status}
+                    </span>
                   </TableCell>
 
                   {/* Actions */}
-                  <TableCell sx={{ border: "1px solid #c2c2c2", display: "flex" }}>
+                  <TableCell
+                    sx={{ border: "1px solid #c2c2c2", display: "flex" }}
+                  >
                     <Button
                       size="small"
                       variant="outlined"

@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import EditInterview from "./EditInterview";
-import DeleteInterview from "./DeleteInterview"
+import DeleteInterview from "./DeleteInterview";
 import { getAllInterview } from "./InterviewApi";
 
 const ViewInterview = () => {
@@ -130,7 +130,7 @@ const ViewInterview = () => {
         <Table>
           <TableHead sx={{ backgroundColor: "rgb(43, 110, 181)" }}>
             <TableRow>
-              {["S.No", "Topic", "Description", "Date", "Action"].map(
+              {["S.No", "Topic", "Description", "Date", "Status", "Action"].map(
                 (heading) => (
                   <TableCell
                     key={heading}
@@ -164,6 +164,25 @@ const ViewInterview = () => {
                   <TableCell sx={{ border: "1px solid #c2c2c2" }}>
                     {item.date?.split("T")[0]}
                   </TableCell>
+                  <TableCell sx={{ border: "1px solid #c2c2c2" }}>
+                    <span
+                      style={{
+                        padding: "4px 10px",
+                        borderRadius: "8px",
+                        color: "white",
+                        backgroundColor:
+                          item.status?.toString().trim().toLowerCase() ===
+                          "active"
+                            ? "green"
+                            : "red",
+
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {item.status}
+                    </span>
+                  </TableCell>
                   <TableCell
                     sx={{ border: "1px solid #c2c2c2", display: "flex" }}
                   >
@@ -188,16 +207,14 @@ const ViewInterview = () => {
                     <Button
                       size="small"
                       variant="contained"
-                     onClick={() =>handleDelete(item._id)}
+                      onClick={() => handleDelete(item._id)}
                       sx={{
                         mx: 0.5,
                         my: 0.5,
                         textTransform: "none",
                         backgroundColor: "#d32f2f", // red
-                        color: "white"
-                        
+                        color: "white",
                       }}
-                       
                     >
                       Delete
                     </Button>

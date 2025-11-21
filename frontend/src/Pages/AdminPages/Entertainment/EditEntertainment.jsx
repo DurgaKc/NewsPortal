@@ -13,6 +13,7 @@ import {
   FormLabel,
   Radio,
   RadioGroup,
+  CircularProgress,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -22,107 +23,88 @@ import toast from "react-hot-toast";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const EditEntertainment = ({ onClose, id }) => {
-  const [mediaPreviews, setMediaPreviews] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     topic: "",
     description: "",
     date: "",
-    media: [],
+    image: null,
     status: "active",
   });
 
-  // ✅ Fetch entertainment post by id
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  // ✅ Fetch entertainment post
   const { data: fetchedPost, isLoading, refetch } = useQuery({
     queryKey: ["entertainment", id],
-    queryFn: async () => await getEntertainmentById(id),
+    queryFn: () => getEntertainmentById(id),
     enabled: !!id,
   });
 
-  // ✅ Prefill form data
+  // ✅ Prefill form when data arrives
   useEffect(() => {
     if (fetchedPost) {
-      const imagePreviews =
-        fetchedPost.images?.map((img) => ({
-          type: "image",
-          url: `${backendUrl}/images/${img}`,
-        })) || [];
-
-      const videoPreviews =
-        fetchedPost.videos?.map((vid) => ({
-          type: "video",
-          url: `${backendUrl}/videos/${vid}`,
-        })) || [];
-
       setFormData({
         topic: fetchedPost.topic || "",
         description: fetchedPost.description || "",
         date: fetchedPost.date ? fetchedPost.date.split("T")[0] : "",
-        media: [...(fetchedPost.images || []), ...(fetchedPost.videos || [])],
+        image: fetchedPost.image || null,
         status: fetchedPost.status || "active",
       });
 
-      setMediaPreviews([...imagePreviews, ...videoPreviews]);
+      if (fetchedPost.image) {
+        setPreview(`${backendUrl}/images/${fetchedPost.image}`);
+      }
     }
   }, [fetchedPost]);
 
-  // ✅ Mutation for updating entertainment post
+  // ✅ Update mutation
   const updateEntertainment = useMutation({
-    mutationFn: (updatedPost) => {
+    mutationFn: () => {
       const token = localStorage.getItem("token");
-      return editEntertainment(id, updatedPost, token);
+      return editEntertainment(id, formData, token);
     },
     onSuccess: () => {
       toast.success("Entertainment post updated successfully!");
       refetch();
-      onClose();
+      onClose && onClose();
     },
     onError: (error) => {
-      console.error(error);
-      toast.error(error.response?.data?.error || "Failed to update post.");
+      toast.error(error.response?.data?.message || "Failed to update post.");
     },
   });
 
-  // ✅ Handle text changes
+  // Handle field changes
   const handleChange = ({ target: { name, value } }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ✅ Handle combined media upload
-  const handleMediaChange = (e) => {
-    const files = Array.from(e.target.files);
-    setFormData((prev) => ({ ...prev, media: files }));
-
-    const previews = files.map((file) => ({
-      type: file.type.startsWith("image") ? "image" : "video",
-      url: URL.createObjectURL(file),
-    }));
-
-    setMediaPreviews(previews);
+  // Handle image upload
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData((prev) => ({ ...prev, image: file }));
+      setPreview(URL.createObjectURL(file));
+    }
   };
 
-  // ✅ Remove individual preview
-  const removeMedia = (index) => {
-    const updatedMedia = [...formData.media];
-    updatedMedia.splice(index, 1);
-    setFormData((prev) => ({ ...prev, media: updatedMedia }));
-
-    const updatedPreviews = [...mediaPreviews];
-    updatedPreviews.splice(index, 1);
-    setMediaPreviews(updatedPreviews);
+  // Remove image
+  const removeImage = () => {
+    setFormData((prev) => ({ ...prev, image: null }));
+    setPreview(null);
   };
 
-  // ✅ Handle form submit
+  // Handle submit
   const handleEdit = (e) => {
     e.preventDefault();
     setLoading(true);
-    updateEntertainment.mutate(formData);
+    updateEntertainment.mutate();
     setLoading(false);
   };
 
   if (isLoading) {
     return (
-      <Typography variant="h6" sx={{ textAlign: "center", mt: 4 }}>
+      <Typography sx={{ textAlign: "center", mt: 4 }}>
         Loading entertainment post...
       </Typography>
     );
@@ -131,16 +113,12 @@ const EditEntertainment = ({ onClose, id }) => {
   return (
     <Grid>
       <DialogContent>
-        <Typography
-          variant="h4"
-          gutterBottom
-          sx={{ mt: 4, mb: 4, textAlign: "center" }}
-        >
+        <Typography variant="h4" sx={{ mt: 4, mb: 4, textAlign: "center" }}>
           Edit Entertainment Post
         </Typography>
 
         <Paper
-          elevation={2}
+          elevation={3}
           sx={{ maxWidth: 700, mx: "auto", p: 3, borderRadius: 2 }}
         >
           <form onSubmit={handleEdit}>
@@ -162,9 +140,9 @@ const EditEntertainment = ({ onClose, id }) => {
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
+                  type="date"
                   name="date"
                   label="Date"
-                  type="date"
                   value={formData.date}
                   onChange={handleChange}
                   InputLabelProps={{ shrink: true }}
@@ -173,64 +151,57 @@ const EditEntertainment = ({ onClose, id }) => {
                 />
               </Grid>
 
-              {/* Media (Left) and Status (Right) */}
+              {/* Image Upload */}
               <Grid item xs={12} sm={6}>
                 <TextField
                   type="file"
+                  name="image"
                   size="small"
-                  name="media"
-                  onChange={handleMediaChange}
-                  accept="image/*,video/*"
-                  label="Upload Images or Videos"
-                  InputLabelProps={{ shrink: true }}
                   fullWidth
-                  multiple
+                  onChange={handleImageChange}
+                  accept="image/*"
+                  label="Upload Image"
+                  InputLabelProps={{ shrink: true }}
                 />
-                <Box sx={{ mt: 1, display: "flex", gap: 1, flexWrap: "wrap" }}>
-                  {mediaPreviews.map((file, index) => (
-                    <Box
-                      key={index}
-                      position="relative"
-                      width={file.type === "video" ? 150 : 100}
+
+                {preview && (
+                  <Box
+                    mt={1}
+                    position="relative"
+                    sx={{
+                      width: "100%",
+                      maxHeight: 160,
+                      borderRadius: 2,
+                      overflow: "hidden",
+                      boxShadow: 2,
+                    }}
+                  >
+                    <IconButton
+                      size="small"
+                      onClick={removeImage}
+                      sx={{
+                        position: "absolute",
+                        right: 4,
+                        top: 4,
+                        background: "rgba(255,255,255,0.8)",
+                      }}
                     >
-                      <IconButton
-                        size="small"
-                        onClick={() => removeMedia(index)}
-                        sx={{
-                          position: "absolute",
-                          top: 0,
-                          right: 0,
-                          background: "rgba(255,255,255,0.8)",
-                        }}
-                      >
-                        <CloseIcon fontSize="small" />
-                      </IconButton>
-                      {file.type === "image" ? (
-                        <img
-                          src={file.url}
-                          alt="preview"
-                          style={{
-                            width: "100%",
-                            height: "auto",
-                            display: "block",
-                          }}
-                        />
-                      ) : (
-                        <video
-                          src={file.url}
-                          controls
-                          style={{ width: "100%", display: "block" }}
-                        />
-                      )}
-                    </Box>
-                  ))}
-                </Box>
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+
+                    <img
+                      src={preview}
+                      alt="Preview"
+                      style={{ width: "100%", display: "block" }}
+                    />
+                  </Box>
+                )}
               </Grid>
 
-              {/* Status (Right Side) */}
+              {/* Status */}
               <Grid item xs={12} sm={6}>
-                <FormControl component="fieldset" fullWidth>
-                  <FormLabel component="legend">Status</FormLabel>
+                <FormControl>
+                  <FormLabel>Status</FormLabel>
                   <RadioGroup
                     row
                     name="status"
@@ -239,12 +210,12 @@ const EditEntertainment = ({ onClose, id }) => {
                   >
                     <FormControlLabel
                       value="active"
-                      control={<Radio color="primary" />}
+                      control={<Radio />}
                       label="Active"
                     />
                     <FormControlLabel
                       value="inactive"
-                      control={<Radio color="primary" />}
+                      control={<Radio />}
                       label="Inactive"
                     />
                   </RadioGroup>
@@ -268,35 +239,22 @@ const EditEntertainment = ({ onClose, id }) => {
 
               {/* Buttons */}
               <Grid item xs={12}>
-                <Box className="flex justify-center gap-4 mt-6">
+                <Box display="flex" justifyContent="center" gap={4} mt={2}>
                   <Button
-                    variant="contained"
-                    color="primary"
                     type="submit"
+                    variant="contained"
                     disabled={loading}
-                    sx={{
-                      textTransform: "none",
-                      px: 4,
-                      borderRadius: 2,
-                      backgroundColor: "#1976d2",
-                      color: "white",
-                      "&:hover": { backgroundColor: "#115293" },
-                    }}
+                    startIcon={loading && <CircularProgress size={20} />}
+                    sx={{ px: 4, borderRadius: 2 }}
                   >
                     {loading ? "Updating..." : "Update Post"}
                   </Button>
 
                   <Button
                     variant="contained"
-                    onClick={() => onClose && onClose(null)}
-                    sx={{
-                      textTransform: "none",
-                      px: 4,
-                      borderRadius: 2,
-                      backgroundColor: "#d32f2f",
-                      color: "white",
-                      "&:hover": { backgroundColor: "#b71c1c" },
-                    }}
+                    color="error"
+                    onClick={() => onClose && onClose()}
+                    sx={{ px: 4, borderRadius: 2 }}
                   >
                     Cancel
                   </Button>

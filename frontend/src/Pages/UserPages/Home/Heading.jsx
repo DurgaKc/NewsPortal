@@ -52,7 +52,7 @@ const Heading = () => {
         const sorted = activeAds.sort(
           (a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt)
         )
-         .slice(0, 2); 
+         .slice(0, 10); 
         setAds(sorted);
       } catch (err) {
         console.error("Error fetching advertisements:", err);

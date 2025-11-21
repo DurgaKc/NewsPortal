@@ -20,7 +20,6 @@ const CurrentNews = () => {
           getAllSports()
           
         ]);
- console.log("International response:", intlRes);
         // Filter active news and get latest 2 from each category
         const getActiveNews = (data) => {
           return data

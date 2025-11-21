@@ -9,18 +9,29 @@ const Footer = () => {
       <Grid container spacing={4} className="max-w-7xl mx-auto">
         {/* About Section */}
         <Grid item xs={12} md={4}>
-          <Typography variant="h6" className="font-bold mb-3">
-            About NewsPortal
+          <Typography variant="h5" className="font-bold mb-3">
+            Sutra Sanchar
           </Typography>
-          <Typography className="text-gray-300 text-sm">
-            Stay updated with the latest news from Nepal and around the world.
-            We deliver breaking news, in-depth analysis, and reliable reporting.
-          </Typography>
+          <div className=" mb-3">
+            Sanamdristi Media Pvt.Ltd.
+          </div>
+          <div className="mb-3">
+            Reg No:353432/81/82 OCR Nepal
+          </div>
+          <div className="mb-3">
+            Musikot, Rukum(west) Nepal
+          </div>
+          <div className="mb-3">
+            Tel:- +9779868664821
+          </div>
+          <div sx={{ pl: 6 }} className=" mb-3 ">
+            +9779866170893
+          </div>
         </Grid>
 
         {/* Quick Links */}
-        <Grid item xs={12} md={4}>
-          <Typography variant="h6" className="font-bold mb-3">
+        <Grid item xs={12} md={2}>
+          <Typography variant="h5" className="font-bold mb-3">
             Quick Links
           </Typography>
           <Box className="flex flex-col gap-1">
@@ -35,14 +46,24 @@ const Footer = () => {
               Home
             </Link>
             <Link
-              href="/world"
+              href="/aboutus"
               underline="none"
               sx={{
                 color: "white",
                 "&:hover": { color: "white" },
               }}
             >
-              World
+              About Us
+            </Link>
+            <Link
+              href="/advertisement"
+              underline="none"
+              sx={{
+                color: "white",
+                "&:hover": { color: "white" },
+              }}
+            >
+              Advertisement
             </Link>
             <Link
               href="/politics"
@@ -55,14 +76,14 @@ const Footer = () => {
               Politics
             </Link>
             <Link
-              href="/business"
+              href="/terms"
               underline="none"
               sx={{
                 color: "white",
                 "&:hover": { color: "white" },
               }}
             >
-              Business
+              Terms  And Conditions
             </Link>
             <Link
               href="/contact"
@@ -78,8 +99,8 @@ const Footer = () => {
         </Grid>
 
         {/* Social Media */}
-        <Grid item xs={12} md={4}>
-          <Typography variant="h6" className="font-bold mb-3">
+        <Grid item xs={12} md={3}>
+          <Typography variant="h5" className="font-bold mb-3">
             Follow Us
           </Typography>
           <Box className="flex">
@@ -131,11 +152,32 @@ const Footer = () => {
             </IconButton>
           </Box>
         </Grid>
+        <Grid item xs={12} md={3}>
+          <Typography variant="h5" className="font-bold pb-5 text-center">
+            Our Team
+          </Typography>
+          <Box className="grid grid-cols-2 gap-4 text-center">
+            <Box>
+              <div className="font-semibold">सम्पादक</div>
+              <div>अनिश के.सी.</div>
+            </Box>
+
+            <Box>
+              <div className="font-semibold">प्रबन्ध निर्देशक</div>
+              <div>अनिश के.सी.</div>
+            </Box>
+          </Box>
+
+          {/* View All placed outside the grid but inside the same Grid item */}
+          <Typography variant="h5" className="font-bold pt-5 pb-5 text-center mt-4">
+            View All
+          </Typography>
+        </Grid>
       </Grid>
 
       {/* Footer Bottom */}
       <Box className="mt-8 border-t border-gray-700  pt-4 text-center text-gray-300 text-lg">
-        © {new Date().getFullYear()} NewsPortal. All rights reserved.
+        Copyright©{new Date().getFullYear()} SutraSanchar. All rights reserved.
       </Box>
     </Box>
   );

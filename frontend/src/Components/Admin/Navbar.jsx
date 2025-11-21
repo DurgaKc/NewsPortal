@@ -19,6 +19,7 @@ const Navbar = () => {
 
   const navLinks = [
     { href: "advertisement", label: "विज्ञापन" },
+    { href: "latestnews", label: "ताजा समाचार" },
     { href: "interlist", label: "अन्तर्राष्ट्रिय" },
     { href: "politics", label: "राजनीति" },
     { href: "local-government", label: "स्थानीय सरकार" },
@@ -62,7 +63,7 @@ const Navbar = () => {
         <div className="flex items-center gap-3">
           <img src="/news.png" alt="Logo" className="w-38 h-28 object-contain" />
           <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-700 to-red-600 bg-clip-text text-transparent animate-pulse">
-            News Portal
+            Sutra Sanchar
           </h1>
         </div>
 
@@ -125,7 +126,7 @@ const Navbar = () => {
                   className="absolute mt-2 w-32 bg-white shadow-lg z-50 dark:bg-sky-700 text-black dark:text-white"
                 >
                   {[
-                    ["education", "शिक्षा"],
+                    ["education", "शिक्षा/प्रविधि"],
                     ["health", "स्वास्थ्य"],
                     ["blog", "ब्लग"],
                     ["literature", "साहित्य"],
@@ -134,6 +135,7 @@ const Navbar = () => {
                     <Link
                       key={href}
                       to={`${href}`}
+                       onClick={() => setOpenDropdown(null)}
                       className="block px-4 py-2 hover:text-orange-500"
                     >
                       {label}

@@ -28,7 +28,7 @@ const EditInternational = ({ onClose, id }) => {
     description: "",
     date: "",
     image: null,
-    status: "Active",
+    status: "active",
   });
 
   // ✅ Fetch news by id
@@ -53,7 +53,7 @@ const EditInternational = ({ onClose, id }) => {
         description: fetchedNews.description || "",
         date: fetchedNews.date ? fetchedNews.date.split("T")[0] : "",
         image: fetchedNews.image || null,
-        status: fetchedNews.status || "Active",
+        status: fetchedNews.status || "active",
       });
 
       // ✅ show correct preview image
@@ -222,9 +222,9 @@ const EditInternational = ({ onClose, id }) => {
                     onChange={handleChange}
                   >
                     <FormControlLabel
-                      value="Active"
+                      value="active"
                       control={<Radio color="primary" />}
-                      label="Active"
+                      label="active"
                     />
                     <FormControlLabel
                       value="Inactive"

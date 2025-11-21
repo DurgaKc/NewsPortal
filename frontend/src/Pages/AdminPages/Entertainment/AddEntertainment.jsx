@@ -26,62 +26,55 @@ const AddEntertainment = ({ onClose }) => {
     topic: "",
     description: "",
     date: "",
-    media: [], // combined field for images and videos
+    image: null,
     status: "active",
   });
 
-  const [mediaPreviews, setMediaPreviews] = useState([]); // preview for both
+  // PREVIEW MUST BE ARRAY
+  const [preview, setPreview] = useState([]);
+
   const [loading, setLoading] = useState(false);
 
-  // Handle text/radio changes
   const handleChange = ({ target: { name, value } }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Handle image/video file selection
-  const handleMediaChange = (e) => {
+  // Handle image upload (single)
+  const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    if (files.length) {
-      setFormData((prev) => ({ ...prev, media: files }));
-      setMediaPreviews(files.map((file) => ({
-        url: URL.createObjectURL(file),
-        type: file.type.startsWith("image") ? "image" : "video",
-      })));
-    }
+
+    setFormData((prev) => ({ ...prev, image: files[0] }));
+
+    // Preview as array
+    setPreview(files.map((file) => URL.createObjectURL(file)));
   };
 
-  const removeMedia = (index) => {
-    setFormData((prev) => ({
-      ...prev,
-      media: prev.media.filter((_, i) => i !== index),
-    }));
-    setMediaPreviews((prev) => prev.filter((_, i) => i !== index));
+  const removeImage = () => {
+    setFormData((prev) => ({ ...prev, image: null }));
+    setPreview([]);
   };
 
-  // Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        toast.error("You must be logged in to add entertainment post");
-        setLoading(false);
-        return;
-      }
 
       await addEntertainment(formData, token);
 
       toast.success("Entertainment post added successfully!");
+
       setFormData({
         topic: "",
         description: "",
         date: "",
-        media: [],
+        image: null,
         status: "active",
       });
-      setMediaPreviews([]);
+
+      setPreview([]);
+
       onClose && onClose();
       navigate("/admin/entertainment");
     } catch (err) {
@@ -104,7 +97,8 @@ const AddEntertainment = ({ onClose }) => {
 
       <Paper elevation={3} sx={{ maxWidth: 800, mx: "auto", p: 4, mb: 4, borderRadius: 3 }}>
         <form onSubmit={handleSubmit}>
-          <Grid container spacing={3}>
+          <Grid container spacing={2}>
+
             {/* Topic */}
             <Grid item xs={12} sm={6}>
               <TextField
@@ -133,82 +127,64 @@ const AddEntertainment = ({ onClose }) => {
               />
             </Grid>
 
-            {/* Combined Media Upload */}
-            <Grid item xs={12} sm={6}>
+            {/* Upload Image */}
+            <Grid item  xs={12} sm={6}>
               <TextField
                 type="file"
                 size="small"
-                name="media"
-                onChange={handleMediaChange}
-                accept="image/*,video/*"
-                label="Upload Images or Videos"
+                name="image"
+                onChange={handleImageChange}
+                accept="image/*"
+                label="Upload Image"
                 InputLabelProps={{ shrink: true }}
                 fullWidth
-                inputProps={{ multiple: true }}
               />
 
-              {/* Media Previews */}
-                <Box sx={{ mt: 1, display: "flex", gap: 1, flexWrap: "wrap" }}>
-                {mediaPreviews.map((file, index) => (
-                    <Box
-                      key={index}
-                      position="relative"
-                      width={file.type === "video" ? 150 : 100}
+              {/* Image Preview */}
+              <Box mt={2} display="flex" gap={2} flexWrap="wrap">
+                {preview.map((src, index) => (
+                  <Box
+                    key={index}
+                    position="relative"
+                    sx={{
+                      width: 140,
+                      height: 140,
+                      borderRadius: 2,
+                      overflow: "hidden",
+                      boxShadow: 1,
+                    }}
+                  >
+                    <IconButton
+                      size="small"
+                      onClick={removeImage}
+                      sx={{
+                        position: "absolute",
+                        top: 4,
+                        right: 4,
+                        background: "rgba(255,255,255,0.8)",
+                        zIndex: 5,
+                      }}
                     >
-                      <IconButton
-                        size="small"
-                        onClick={() => removeMedia(index)}
-                        sx={{
-                          position: "absolute",
-                          top: 0,
-                          right: 0,
-                          background: "rgba(255,255,255,0.8)",
-                        }}
-                      >
-                        <CloseIcon fontSize="small" />
-                      </IconButton>
-                      {file.type === "image" ? (
-                        <img
-                          src={file.url}
-                          alt="preview"
-                          style={{
-                            width: "100%",
-                            height: "auto",
-                            display: "block",
-                          }}
-                        />
-                      ) : (
-                        <video
-                          src={file.url}
-                          controls
-                          style={{ width: "100%", display: "block" }}
-                        />
-                      )}
-                    </Box>
+                      <CloseIcon fontSize="small" />
+                    </IconButton>
+
+                    <img
+                      src={src}
+                      alt="Preview"
+                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  </Box>
                 ))}
               </Box>
             </Grid>
 
             {/* Status */}
-            <Grid item xs={12} sm={6}>
-              <FormControl component="fieldset">
-                <FormLabel component="legend">Status</FormLabel>
-                <RadioGroup
-                  row
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                >
-                  <FormControlLabel
-                    value="active"
-                    control={<Radio color="primary" />}
-                    label="Active"
-                  />
-                  <FormControlLabel
-                    value="inactive"
-                    control={<Radio color="primary" />}
-                    label="Inactive"
-                  />
+            <Grid item  xs={12} sm={6}>
+              <FormControl>
+                <FormLabel>Status</FormLabel>
+                <RadioGroup row name="status" value={formData.status} onChange={handleChange}>
+                  <FormControlLabel value="active" control={<Radio />} label="Active" />
+                  <FormControlLabel value="inactive" control={<Radio />} label="Inactive" />
                 </RadioGroup>
               </FormControl>
             </Grid>
@@ -237,27 +213,15 @@ const AddEntertainment = ({ onClose }) => {
                   type="submit"
                   disabled={loading}
                   startIcon={loading && <CircularProgress size={20} />}
-                  sx={{
-                    textTransform: "none",
-                    px: 4,
-                    borderRadius: 2,
-                    fontWeight: 600,
-                    backgroundColor: "#1976d2",
-                    color: "white",
-                    "&:hover": { backgroundColor: "#115293" },
-                  }}
                 >
                   {loading ? "Adding..." : "Add Entertainment"}
                 </Button>
+
                 <Button
                   variant="contained"
                   onClick={() => navigate("/admin/entertainment")}
                   sx={{
-                    textTransform: "none",
-                    px: 4,
-                    borderRadius: 2,
                     backgroundColor: "#d32f2f",
-                    color: "white",
                     "&:hover": { backgroundColor: "#b71c1c" },
                   }}
                 >

@@ -15,12 +15,10 @@ import Blog from "../Pages/UserPages/Blog";
 import Health from "../Pages/UserPages/Health";
 import Literature from "../Pages/UserPages/Literature/Literature";
 import Lifestyle from "../Pages/UserPages/Lifestyle";
-import Login from "../Pages/UserPages/Login";
 import AdminLayout from "../Layout/AdminLayout";
 import Home from "../Pages/AdminPages/Home";
 import AddInternational from "../Pages/AdminPages/International/AddInternational";
 import InternationalList from "../Pages/AdminPages/International/International";
-import PasswordChange from "../Components/Admin/PasswordChange";
 import UserProfile from "../Components/Admin/UserProfile";
 import InternationalDetail from "../Pages/AdminPages/International/InternationalDetail";
 import ViewPolitics from "../Pages/AdminPages/Politics/ViewPolitics";
@@ -61,6 +59,16 @@ import AddAdvertisement from "../Pages/AdminPages/Advertisement/AddAdvertisement
 import InterviewDetails from "../Pages/AdminPages/Interview/InterviewDetails";
 import BlogDetails from "../Pages/AdminPages/Blog/BlogDetails";
 import LifestyleDetails from "../Pages/AdminPages/Lifestyle/LifestyleDetails";
+import EntertainmentDetails from "../Pages/AdminPages/Entertainment/EntertainmentDetails";
+import ViewLatestNews from "../Pages/AdminPages/LatestNews/ViewLatestNews";
+import AddLatestNews from "../Pages/AdminPages/LatestNews/AddLatestnews";
+import LatestNewsDetails from "../Pages/AdminPages/LatestNews/LatestNewsDetails";
+import LatestNewss from "../Pages/UserPages/Latestnewss";
+import PasswordChange from "../Components/Admin/PasswordChange/PasswordChange";
+import Advertisement from "../Pages/UserPages/Advertisement";
+import Login from "../Components/UserLogin/Login";
+import Terms from "../Pages/UserPages/Terms";
+import AboutUs from "../Pages/UserPages/AboutUs";
 
 const AppRoutes = () => {
   return (
@@ -68,6 +76,10 @@ const AppRoutes = () => {
       <Routes>
         <Route path="/" element={<UserLayout />}>
           <Route index element={<Main />} />
+          <Route path="/latestnewss" element={<LatestNewss />} />
+          <Route path="/advertisement" element={<Advertisement />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/aboutus" element={<AboutUs />} />
           <Route path="/news" element={<News />} />
           <Route path="/international" element={<International />} />
           <Route path="/politics" element={<Politics />} />
@@ -81,18 +93,20 @@ const AppRoutes = () => {
           <Route path="/blog" element={<Blog />} />
           <Route path="/literature" element={<Literature />} />
           <Route path="/lifestyle" element={<Lifestyle />} />
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<Login/>} />
           <Route path="/international/:id" element={<InternationalDetail />} />
           <Route path="/politics/:id" element={<PoliticsDetails />} />
           <Route path="/local-government/:id" element={<LocalGovernmentDetails />} />
           <Route path="/sports/:id" element={<SportsDetails />} />
           <Route path="/province/:id" element={<ProvinceDetails />} />
           <Route path="/interview/:id" element={<InterviewDetails />} />
+          <Route path="/entertainment/:id" element={<EntertainmentDetails />} />
           <Route path="/education/:id" element={<EducationDetails />} />
           <Route path="/health/:id" element={<HealthDetails />} />
           <Route path="/literature/:id" element={<LiteratureDetails />} />
           <Route path="/blog/:id" element={<BlogDetails />} />
           <Route path="/lifestyle/:id" element={<LifestyleDetails />} />
+          <Route path="/latestnews/:id" element={<LatestNewsDetails />} />
           <Route path="/literature/poem" element={<PoemList />} />
           <Route path="/literature/story" element={<StoryList />} />
           <Route path="/literature/muktak" element={<MuktakList />} />
@@ -147,6 +161,9 @@ const AppRoutes = () => {
           {/* advertisement */}
           <Route path="advertisement" element={<ViewAdvertisement/>}/>
           <Route path="/admin/advertisement/addadvertisement" element={<AddAdvertisement/>}/>
+          {/* latestnews */}
+          <Route path="latestnews" element={<ViewLatestNews/>}/>
+          <Route path="/admin/latestnews/addlatestnews" element={<AddLatestNews/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

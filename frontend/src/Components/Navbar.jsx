@@ -7,6 +7,7 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { IoPerson } from "react-icons/io5";
 import HomeIcon from "@mui/icons-material/Home";
 import NepaliDateTime from "./NepaliDateTime";
+import Admin from "./UserLogin/admin";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -71,7 +72,7 @@ const Navbar = () => {
             className="w-38 h-28 object-contain"
           />
           <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-700 to-red-600 bg-clip-text text-transparent animate-pulse">
-            News Portal
+            Sutra Sanchar
           </h1>
         </div>
 
@@ -95,91 +96,91 @@ const Navbar = () => {
         >
           {isMenuOpen ? <IoMdClose /> : <GiHamburgerMenu />}
         </button>
-
-        <ul
-          className={`flex-col ${
-            isMenuOpen ? "flex" : "hidden"
-          } md:flex md:flex-row md:gap-6`}
-        >
-          <li>
-            <Link to="/" className="mr-2 hover:text-orange-500 ml-10">
-              <HomeIcon />
-            </Link>
-          </li>
-
-          {navLinks.map((link, idx) => (
-            <li key={idx}>
-              <Link to={link.href} className="hover:text-orange-500">
-                {link.label}
+        <div className="flex w-full justify-between items-center">
+          <ul
+            className={`flex-col ${
+              isMenuOpen ? "flex" : "hidden"
+            } md:flex md:flex-row md:gap-6`}
+          >
+            <li>
+              <Link to="/" className="mr-2 hover:text-orange-500 ml-10">
+                <HomeIcon />
               </Link>
             </li>
-          ))}
 
-          {/* ✅ Others Dropdown */}
-          <li className="relative">
-            <button
-              type="button"
-              ref={othersBtnRef}
-              onClick={() =>
-                setOpenDropdown(openDropdown === "others" ? null : "others")
-              }
-              className="inline-flex items-center hover:text-orange-500"
-            >
-              अन्य <RiArrowDropDownLine className="text-2xl ml-1" />
-            </button>
+            {navLinks.map((link, idx) => (
+              <li key={idx}>
+                <Link to={link.href} className="hover:text-orange-500">
+                  {link.label}
+                </Link>
+              </li>
+            ))}
 
-            {openDropdown === "others" && (
-              <div
-                ref={othersRef}
-                className="absolute mt-2 w-32 bg-white shadow-lg z-50 dark:bg-sky-700 text-black dark:text-white"
+            {/* ✅ Others Dropdown */}
+            <li className="relative">
+              <button
+                type="button"
+                ref={othersBtnRef}
+                onClick={() =>
+                  setOpenDropdown(openDropdown === "others" ? null : "others")
+                }
+                className="inline-flex items-center hover:text-orange-500"
               >
-                <Link
-                  to="/education"
-                  className="block px-4 py-2 hover:text-orange-500"
-                >
-                  शिक्षा
-                </Link>
-                <Link
-                  to="/health"
-                  className="block px-4 py-2 hover:text-orange-500"
-                >
-                  स्वास्थ्य
-                </Link>
-                <Link
-                  to="/blog"
-                  className="block px-4 py-2 hover:text-orange-500"
-                >
-                  ब्लग
-                </Link>
-                <Link
-                  to="/literature"
-                  className="block px-4 py-2 hover:text-orange-500"
-                >
-                  साहित्य
-                </Link>
-                <Link
-                  to="/lifestyle"
-                  className="block px-4 py-2 hover:text-orange-500"
-                >
-                  जीवनशैली
-                </Link>
-              </div>
-            )}
-          </li>
+                अन्य <RiArrowDropDownLine className="text-2xl ml-1" />
+              </button>
 
-          <li className="flex items-center hover:text-black cursor-pointer">
-            <IoPerson className="mt-1 mr-1" />
-            <Link to="/login" className="mr-8">
-              Login
-            </Link>
-          </li>
-          <li className="flex items-center hover:text-black cursor-pointer">
-            <IoPerson className="mt-1 mr-1" />
-             <Link to="/admin" className="mr-8">
-              Login
-            </Link>
-          </li>
-        </ul>
+              {openDropdown === "others" && (
+                <div
+                  ref={othersRef}
+                  onClick={() => setOpenDropdown(null)}
+                  className="absolute mt-2 w-32 bg-white shadow-lg z-50 dark:bg-sky-700 text-black dark:text-white"
+                >
+                  <Link
+                    to="/education"
+                    className="block px-4 py-2 hover:text-orange-500"
+                  >
+                    शिक्षा/प्रविधि
+                  </Link>
+                  <Link
+                    to="/health"
+                    className="block px-4 py-2 hover:text-orange-500"
+                  >
+                    स्वास्थ्य
+                  </Link>
+                  <Link
+                    to="/blog"
+                    className="block px-4 py-2 hover:text-orange-500"
+                  >
+                    ब्लग
+                  </Link>
+                  <Link
+                    to="/literature"
+                    className="block px-4 py-2 hover:text-orange-500"
+                  >
+                    साहित्य
+                  </Link>
+                  <Link
+                    to="/lifestyle"
+                    className="block px-4 py-2 hover:text-orange-500"
+                  >
+                    जीवनशैली
+                  </Link>
+                </div>
+              )}
+            </li>
+
+            <li className="flex items-center hover:text-black cursor-pointer">
+              <IoPerson className="mt-1 mr-1" />
+              <Link to="/admin" className="mr-8">
+                Login
+              </Link>
+            </li>
+          </ul>
+          {/* Right Side: Admin Section */}
+          <div className="flex items-center justify-end">
+            <Admin/>
+          </div>
+        </div>
       </Grid>
     </Grid>
   );

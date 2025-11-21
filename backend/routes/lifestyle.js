@@ -9,11 +9,10 @@ const {
   deleteLifestyle,
 } = require("../controller/lifestyle");
 
-// ✅ Get all posts
 router.get("/getLifestyle", getLifestyles);
 router.get("/:id", getLifestyle);
 router.post("/addLifestyle",upload.single("image"),addLifestyle);
-router.post("/editLifestyle/:id",upload.single("image"),editLifestyle);
+router.put("/editLifestyle/:id",upload.single("image"),editLifestyle);
 router.delete("/deleteLifestyle/:id", deleteLifestyle);
 
 module.exports = router;

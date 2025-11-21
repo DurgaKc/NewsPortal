@@ -20,12 +20,19 @@ const advertisementSchema = new mongoose.Schema(
       type: String,
      
     },
-    status: {
+    Popup: {
       type: String,
       enum: ["active", "inactive"],
       default: "active",
        required: true,
     },
+    
+    status: {
+      type: String,
+      enum: ["active", "inactive"],
+      default: "active",
+       required: true,
+    }
   },
   { timestamps: true }
 );

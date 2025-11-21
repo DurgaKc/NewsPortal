@@ -27,6 +27,7 @@ const AddAdvertisement = ({ onClose }) => {
     description: "",
     date: "",
     image: null,
+    popup: "active",
     status: "active",
   });
 
@@ -178,6 +179,28 @@ const AddAdvertisement = ({ onClose }) => {
             <Grid item xs={12} sm={6}>
               <FormControl component="fieldset">
                 <FormLabel component="legend">Status</FormLabel>
+                <RadioGroup
+                  row
+                  name="status"
+                  value={formData.popup}
+                  onChange={handleChange}
+                >
+                  <FormControlLabel
+                    value="active"
+                    control={<Radio color="primary" />}
+                    label="Active"
+                  />
+                  <FormControlLabel
+                    value="inactive"
+                    control={<Radio color="primary" />}
+                    label="Inactive"
+                  />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <FormControl component="fieldset">
+                <FormLabel component="legend">Popup</FormLabel>
                 <RadioGroup
                   row
                   name="status"

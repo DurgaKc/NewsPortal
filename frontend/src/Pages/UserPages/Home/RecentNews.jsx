@@ -1,68 +1,49 @@
 import React, { useEffect, useState } from "react";
 import { Box, Typography } from "@mui/material";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { Link } from "react-router-dom";
+
 import { getAllNews } from "../../AdminPages/International/InterApi";
 import { getAllPolitics } from "../../AdminPages/Politics/PoliticsApi";
 import { getAllSports } from "../../AdminPages/Sports/SportsApi";
+import { getAllLocalGovernment } from "../../AdminPages/LocalGovernment/LocalGovernmentApi";
+import { getAllEntertainment } from "../../AdminPages/Entertainment/EntertainmentApi";
+import { getAllLiterature } from "../../AdminPages/Literature/LiteratureApi";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 const CurrentNews = () => {
-  const [allStories, setAllStories] = useState([]);
+  const [sections, setSections] = useState({});
   const [loading, setLoading] = useState(true);
-
-  // Time ago function
-  const timeAgo = (date) => {
-    const now = new Date();
-    const past = new Date(date);
-    const diffYears = now.getFullYear() - past.getFullYear();
-    if (diffYears >= 1) return `${diffYears} years ago`;
-
-    const diffMonths = now.getMonth() - past.getMonth();
-    if (diffMonths >= 1) return `${diffMonths} months ago`;
-
-    const diffDays = Math.floor((now - past) / (1000 * 60 * 60 * 24));
-    if (diffDays >= 1) return `${diffDays} days ago`;
-
-    return "Today";
-  };
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
-        const [intlRes, polRes, sportsRes] = await Promise.all([
-          getAllNews(),
-          getAllPolitics(),
-          getAllSports(),
-        ]);
+        const [intlRes, polRes, sportsRes, localGovRes, entRes, litRes] =
+          await Promise.all([
+            getAllNews(),
+            getAllPolitics(),
+            getAllSports(),
+            getAllLocalGovernment(),
+            getAllEntertainment(),
+            getAllLiterature(),
+          ]);
 
-        const getActiveNews = (data) =>
+        const getActive = (data, type) =>
           data
-            .filter((item) => item.status === "active" || item.status === true)
+            .filter((i) => i.status === "active" || i.status === true)
             .sort((a, b) => new Date(b.date) - new Date(a.date))
-            .slice(0, 2);
+            .slice(0, 4) // 4 news per section
+            .map((i) => ({ ...i, type }));
+        console.log("International response:", intlRes.data);
 
-        const intl = getActiveNews(intlRes.data);
-        const pol = getActiveNews(polRes.data);
-        const sports = getActiveNews(sportsRes.data);
-
-        const combined = [
-          ...intl.map((i) => ({ ...i, type: "international" })),
-          ...pol.map((i) => ({ ...i, type: "politics" })),
-          ...sports.map((i) => ({ ...i, type: "sports" })),
-        ];
-
-        setAllStories(
-          combined.map((item) => ({
-            id: item._id,
-            img: item.image ? `${backendUrl}/images/${item.image}` : "/placeholder.jpg",
-            label: item.topic,
-            description: item.description?.slice(0, 60) + "...",
-            time: item.date,
-            type: item.type,
-          }))
-        );
+        setSections({
+          अन्तर्राष्ट्रिय: getActive(intlRes.data, "international"),
+          राजनीति: getActive(polRes.data, "politics"),
+          खेलकुद: getActive(sportsRes.data, "sports"),
+          स्थानीयसरकार: getActive(localGovRes.data, "local-government"),
+          मनोरञ्जन: getActive(entRes.data, "entertainment"),
+          साहित्य: getActive(litRes.data, "literature"),
+        });
       } catch (err) {
         console.error("Error fetching news:", err);
       } finally {
@@ -73,57 +54,59 @@ const CurrentNews = () => {
     fetchNews();
   }, []);
 
-  const getNewsRoute = (story) => {
-    switch (story.type) {
-      case "international":
-        return `/international/${story.id}`;
-      case "politics":
-        return `/politics/${story.id}`;
-      case "sports":
-        return `/sports/${story.id}`;
-      default:
-        return "#";
-    }
-  };
+  const getRoute = (story) => `/${story.type}/${story._id}`;
 
-  if (loading) {
+  if (loading)
     return <Typography className="p-4 text-gray-500">Loading...</Typography>;
-  }
 
   return (
-    <Box className="flex flex-col gap-4 mt-4">
-      {allStories.map((story) => (
-        <Link
-          key={story.id}
-          to={getNewsRoute(story)}
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          <Box className="bg-white shadow-md rounded-xl flex gap-4 p-3 cursor-pointer hover:shadow-lg transition-all">
-
-            {/* IMAGE */}
-            <img
-              src={story.img}
-              alt={story.label}
-              className="w-40 h-28 rounded-lg object-cover"
-            />
-
-            {/* TEXT AREA */}
-            <Box className="flex flex-col justify-center">
-              <Typography variant="h6" className="font-semibold text-gray-900">
-                {story.label}
-              </Typography>
-
-              <Typography className="text-gray-600 text-sm mt-1">
-                {story.description}
-              </Typography>
-
-              <Box className="flex items-center gap-1 text-gray-500 text-xs mt-2">
-                <AccessTimeIcon style={{ fontSize: "14px" }} />
-                <span>{timeAgo(story.time)}</span>
-              </Box>
-            </Box>
+    <Box className="flex flex-col gap-10 py-6">
+      {Object.entries(sections).map(([sectionName, items]) => (
+        <Box key={sectionName} className="flex flex-col w-full">
+          {/* Section Heading */}
+          <Box className="flex items-center mb-6">
+            <Box className="flex-1 h-px bg-gray-300"></Box>
+            <Typography
+              variant="h5"
+              className="font-bold text-gray-800 uppercase px-4 tracking-wide text-center"
+            >
+              {sectionName}
+            </Typography>
+            <Box className="flex-1 h-px bg-gray-300"></Box>
           </Box>
-        </Link>
+
+          {/* News Grid: 2 per row */}
+          <Box className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {items.map((story) => (
+              <Link
+                key={story._id}
+                to={getRoute(story)}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <Box className="bg-white shadow-md rounded-xl p-3 hover:shadow-lg transition-all flex flex-col">
+                  {/* IMAGE */}
+                  <img
+                    src={
+                      story.image
+                        ? `${backendUrl}/images/${story.image}`
+                        : "/placeholder.jpg"
+                    }
+                    alt={story.topic}
+                    className="w-full h-80 rounded-lg object-cover mb-3"
+                  />
+
+                  {/* title */}
+                  <Typography
+                    variant="h6"
+                    className="font-semibold text-gray-900 text-center"
+                  >
+                    {story.topic}
+                  </Typography>
+                </Box>
+              </Link>
+            ))}
+          </Box>
+        </Box>
       ))}
     </Box>
   );

@@ -5,7 +5,6 @@ const literatureSchema = new mongoose.Schema(
     topic: { type: String, required: true },
     author: { type: String, required: false },
 
-    // Dropdown categories
     category: {
       type: String,
       enum: ["Poem", "Story", "Ghazal", "Muktak"],

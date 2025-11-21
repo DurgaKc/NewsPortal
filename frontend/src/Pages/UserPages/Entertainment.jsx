@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Box, Typography, Grid, Button } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import { getAllEntertainment } from "../AdminPages/Entertainment/EntertainmentApi";
+import { Link } from "react-router-dom";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-// Time ago formatter
 const timeAgo = (date) => {
   const now = new Date();
   const past = new Date(date);
@@ -24,63 +24,74 @@ const timeAgo = (date) => {
   return `${diffInYears} years ago`;
 };
 
-// Get first image/video URL based on backend structure
-const getMediaUrl = (item) => {
-  if (item?.images?.length > 0) {
-    return `${backendUrl}/images/${item.images[0]}`;
-  }
-  if (item?.videos?.length > 0) {
-    return `${backendUrl}/videos/${item.videos[0]}`;
-  }
-  return "/placeholder.jpg";
-};
-
-// Check if URL is video
-const isVideo = (url) =>
-  url.endsWith(".mp4") ||
-  url.endsWith(".mov") ||
-  url.endsWith(".avi") ||
-  url.endsWith(".mkv");
-
 const Entertainment = () => {
-  const [news, setNews] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
 
-  const firstPageItems = 20; // excluding featured
+  const firstPageItems = 20;
   const otherPageItems = 24;
 
-  // Fetch entertainment posts
   useEffect(() => {
-    const fetchEntertainment = async () => {
+    const fetchPosts = async () => {
       try {
-        const res = await getAllEntertainment();
-        const sorted = res.data.sort(
+        const response = await getAllEntertainment();
+
+        // Filter only active posts
+        const activePosts = response.data.filter((item) => {
+          const statusValue =
+            typeof item.status === "string"
+              ? item.status.toLowerCase()
+              : item.status;
+          return statusValue === "active" || statusValue === true;
+        });
+
+        // Sort newest first
+        const sorted = activePosts.sort(
           (a, b) => new Date(b.date) - new Date(a.date)
         );
-        setNews(sorted);
-      } catch (err) {
-        console.error("Error fetching entertainment posts:", err);
+
+        setPosts(sorted);
+      } catch (error) {
+        console.error("Error fetching entertainment posts:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchEntertainment();
+    fetchPosts();
   }, []);
 
-  // Featured post
-  const featured = news[0];
-
-  // Pagination logic
-  let paginatedItems = [];
-  if (currentPage === 1) {
-    paginatedItems = news.slice(1, firstPageItems + 1);
-  } else {
-    const startIndex =
-      1 + firstPageItems + (currentPage - 2) * otherPageItems;
-    const endIndex = startIndex + otherPageItems;
-    paginatedItems = news.slice(startIndex, endIndex);
+  if (loading) {
+    return (
+      <Box className="flex justify-center items-center h-96">
+        <Typography variant="h6">Loading entertainment...</Typography>
+      </Box>
+    );
   }
 
-  const remainingItems = news.length - 1 - firstPageItems;
+  if (!posts || posts.length === 0) {
+    return (
+      <Box className="flex justify-center items-center h-96">
+        <Typography variant="h6" color="text.secondary">
+          No entertainment posts available.
+        </Typography>
+      </Box>
+    );
+  }
+
+  const featured = posts[0];
+  let paginatedItems = [];
+
+  if (currentPage === 1) {
+    paginatedItems = posts.slice(1, firstPageItems + 1);
+  } else {
+    const startIndex = 1 + firstPageItems + (currentPage - 2) * otherPageItems;
+    const endIndex = startIndex + otherPageItems;
+    paginatedItems = posts.slice(startIndex, endIndex);
+  }
+
+  const remainingItems = posts.length - 1 - firstPageItems;
   const totalPages =
     1 + Math.ceil(Math.max(0, remainingItems) / otherPageItems);
 
@@ -94,7 +105,7 @@ const Entertainment = () => {
 
   return (
     <Box className="w-full p-5 pt-10">
-      {/* Featured Card (only on first page) */}
+      {/* Featured Post */}
       {currentPage === 1 && featured && (
         <Grid
           container
@@ -102,19 +113,11 @@ const Entertainment = () => {
           className="mb-10 border-b border-gray-300 pb-6"
         >
           <Grid item xs={12} md={7}>
-            {isVideo(getMediaUrl(featured)) ? (
-              <video
-                src={getMediaUrl(featured)}
-                controls
-                className="w-full h-100 object-cover rounded-lg"
-              />
-            ) : (
-              <img
-                src={getMediaUrl(featured)}
-                alt={featured.topic}
-                className="w-full h-100 object-cover rounded-lg"
-              />
-            )}
+            <img
+              src={`${backendUrl}/images/${featured.image}`}
+              alt={featured.topic}
+              className="w-full h-100 object-cover rounded-lg"
+            />
           </Grid>
 
           <Grid item xs={12} md={5}>
@@ -124,57 +127,53 @@ const Entertainment = () => {
                 <Typography>{timeAgo(featured.date)}</Typography>
               </Box>
             </Box>
+            <Link
+              to={`/entertainment/${featured._id}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Typography variant="h3" className="font-bold leading-snug">
+                {featured.topic}
+              </Typography>
+            </Link>
 
-            <Typography variant="h3" className="font-bold leading-snug">
-              {featured.topic}
-            </Typography>
-
-            <Typography className="text-gray-700 text-base pt-6 line-clamp-3">
-              {featured.description}
-            </Typography>
+            <Link
+              to={`/entertainment/${featured._id}`}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <Typography className="text-gray-700 text-base pt-6 hover:underline line-clamp-3">
+                {featured.description}
+              </Typography>
+            </Link>
           </Grid>
         </Grid>
       )}
 
-      {/* Grid Items */}
-      <Grid container spacing={3}>
-        {paginatedItems.map((item, index) => {
-          const mediaUrl = getMediaUrl(item);
+      {/* Entertainment Grid */}
+      <Grid container spacing={2}>
+        {paginatedItems.map((item, index) => (
+          <Grid item xs={12} sm={6} md={3} key={`${item._id}-${index}`}>
+            <Box className="flex flex-col gap-2">
+              <img
+                src={`${backendUrl}/images/${item.image}`}
+                alt={item.topic}
+                className="w-full h-90 object-cover rounded-lg"
+              />
 
-          return (
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              md={4}
-              key={`${item.id}-${index}`}
-            >
-              <Box className="flex flex-col gap-2">
-                {isVideo(mediaUrl) ? (
-                  <video
-                    src={mediaUrl}
-                    controls
-                    className="w-full h-90 object-cover rounded-lg"
-                  />
-                ) : (
-                  <img
-                    src={mediaUrl}
-                    alt={item.topic}
-                    className="w-full h-90 object-cover rounded-lg"
-                  />
-                )}
+              <Typography variant="h5" className="font-semibold">
+                {item.topic}
+              </Typography>
 
-                <Typography variant="h5" className="font-semibold">
-                  {item.topic}
-                </Typography>
-
-                <Typography className="text-gray-700 text-sm line-clamp-2">
+              <Link
+                to={`/entertainment/${item._id}`}
+                style={{ textDecoration: "none", color: "inherit" }}
+              >
+                <Typography className="text-gray-700 text-sm line-clamp-2 hover:underline">
                   {item.description}
                 </Typography>
-              </Box>
-            </Grid>
-          );
-        })}
+              </Link>
+            </Box>
+          </Grid>
+        ))}
       </Grid>
 
       {/* Pagination */}
@@ -184,11 +183,6 @@ const Entertainment = () => {
           size="small"
           disabled={currentPage === 1}
           onClick={handlePrev}
-          sx={{
-            textTransform: "none",
-            borderRadius: "8px",
-            padding: "6px 16px",
-          }}
         >
           Prev
         </Button>
@@ -202,11 +196,6 @@ const Entertainment = () => {
           size="small"
           disabled={currentPage === totalPages}
           onClick={handleNext}
-          sx={{
-            textTransform: "none",
-            borderRadius: "8px",
-            padding: "6px 16px",
-          }}
         >
           Next
         </Button>

@@ -83,18 +83,15 @@ const LocalGovernment = () => {
     <Box className="flex w-full h-screen">
       <Box className="w-full p-4 overflow-y-auto">
 
-        {/* =============== TOP (FEATURED) NEWS ================= */}
         {topNews && (
           <Box className="mb-8 flex flex-col md:flex-row gap-4 items-start">
 
-            {/* ❌ NOT CLICKABLE IMAGE */}
             <img
               src={`${backendUrl}/images/${topNews.image}`}
               alt={topNews.topic}
               className="w-full md:w-1/2 h-80 object-cover rounded-lg"
             />
 
-            {/* RIGHT CONTENT */}
             <Box className="flex flex-col justify-between md:w-1/2">
               <Box className="flex items-center gap-2 text-gray-500 text-sm mt-auto mr-6 self-end">
                 <AccessTimeIcon sx={{ fontSize: 16 }} />

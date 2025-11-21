@@ -27,7 +27,7 @@ const AddInternational = ({ onClose }) => {
     description: "",
     date: "",
     image: null,
-    status: "Active",
+    status: "active",
   });
 
   const [preview, setPreview] = useState(null);
@@ -187,12 +187,12 @@ const AddInternational = ({ onClose }) => {
                   <FormControlLabel
                     value="active"
                     control={<Radio color="primary" />}
-                    label="Active"
+                    label="active"
                   />
                   <FormControlLabel
                     value="inactive"
                     control={<Radio color="primary" />}
-                    label="Inactive"
+                    label="inactive"
                   />
                 </RadioGroup>
               </FormControl>
