@@ -22,6 +22,9 @@ const Footer = () => {
             Musikot, Rukum(west) Nepal
           </div>
           <div className="mb-3">
+            Musikot, Rukum(west) Nepal
+          </div>
+          <div className="mb-3">
             Tel:- +9779868664821
           </div>
           <div sx={{ pl: 6 }} className=" mb-3 ">
