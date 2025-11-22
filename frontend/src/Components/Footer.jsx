@@ -8,7 +8,7 @@ const Footer = () => {
     <Box className="dark:bg-sky-700 text-white py-10 px-5">
       <Grid container spacing={4} className="max-w-7xl mx-auto">
         {/* About Section */}
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} sm={6} md={4}>
           <Typography variant="h5" className="font-bold mb-3">
             Sutra Sanchar
           </Typography>
@@ -22,9 +22,6 @@ const Footer = () => {
             Musikot, Rukum(west) Nepal
           </div>
           <div className="mb-3">
-            Musikot, Rukum(west) Nepal
-          </div>
-          <div className="mb-3">
             Tel:- +9779868664821
           </div>
           <div sx={{ pl: 6 }} className=" mb-3 ">
@@ -33,7 +30,7 @@ const Footer = () => {
         </Grid>
 
         {/* Quick Links */}
-        <Grid item xs={12} md={2}>
+        <Grid item xs={12} sm={6} md={2}>
           <Typography variant="h5" className="font-bold mb-3">
             Quick Links
           </Typography>
@@ -89,7 +86,7 @@ const Footer = () => {
               Terms  And Conditions
             </Link>
             <Link
-              href="/contact"
+              href="/contactus"
               underline="none"
               sx={{
                 color: "white",
@@ -102,7 +99,7 @@ const Footer = () => {
         </Grid>
 
         {/* Social Media */}
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <Typography variant="h5" className="font-bold mb-3">
             Follow Us
           </Typography>
@@ -155,7 +152,7 @@ const Footer = () => {
             </IconButton>
           </Box>
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} sm={6} md={3}>
           <Typography variant="h5" className="font-bold pb-5 text-center">
             Our Team
           </Typography>
@@ -167,7 +164,7 @@ const Footer = () => {
 
             <Box>
               <div className="font-semibold">प्रबन्ध निर्देशक</div>
-              <div>अनिश के.सी.</div>
+              <div>अनिशेष के.सी.</div>
             </Box>
           </Box>
 

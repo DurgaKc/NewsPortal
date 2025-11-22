@@ -15,7 +15,7 @@ const DeleteAdvertisement = ({ id, onClose }) => {
       await deleteAdvertisement(id, token); // delete advertisement by id
       toast.success("Advertisement deleted successfully");
 
-      if (onClose) onClose(); // close dialog & optionally refresh list
+      if (onClose) onClose();
     } catch (error) {
       console.error(error);
       toast.error("Failed to delete advertisement. Please try again");

@@ -49,29 +49,37 @@ const PoliticsSidebar = () => {
   const [sportsNews, setSportsNews] = useState([]);
   const [healthNews, setHealthNews] = useState([]);
 
-  useEffect(() => {
-    const fetchAllNews = async () => {
-      try {
-        const [interRes, localRes, sportsRes, healthRes] = await Promise.all([
-          getAllNews(),
-          getAllLocalGovernment(),
-          getAllSports(),
-          getAllHealth(),
-        ]);
+useEffect(() => {
+  const fetchAllNews = async () => {
+    try {
+      const [interRes, localRes, sportsRes, healthRes] = await Promise.all([
+        getAllNews(),
+        getAllLocalGovernment(),
+        getAllSports(),
+        getAllHealth(),
+      ]);
 
-        setInternationalNews(interRes.data || []);
-        setLocalNews(localRes.data || []);
-        setSportsNews(sportsRes.data || []);
-        setHealthNews(healthRes.data || []);
-      } catch (error) {
-        console.error("Error fetching sidebar news:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const filterActive = (data) => {
+        return (data || []).filter((item) => {
+          const status = typeof item.status === "string" ? item.status.toLowerCase() : item.status;
+          return status === "active" || status === true;
+        });
+      };
 
-    fetchAllNews();
-  }, []);
+      setInternationalNews(filterActive(interRes.data));
+      setLocalNews(filterActive(localRes.data));
+      setSportsNews(filterActive(sportsRes.data));
+      setHealthNews(filterActive(healthRes.data));
+    } catch (error) {
+      console.error("Error fetching sidebar news:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchAllNews();
+}, []);
+
 
   if (loading) {
     return (

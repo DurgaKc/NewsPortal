@@ -62,15 +62,21 @@ const Navbar = () => {
       <Box className="w-full pt-3 pb-1 px-4 flex flex-col md:flex-row items-center justify-between">
         <div className="flex items-center gap-3">
           <img src="/news.png" alt="Logo" className="w-38 h-28 object-contain" />
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-700 to-red-600 bg-clip-text text-transparent animate-pulse">
-            Sutra Sanchar
-          </h1>
+           <div className="flex flex-col">
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-orange-700 to-red-600 bg-clip-text text-transparent animate-pulse">
+              Sutra Sanchar
+            </h1>
+
+            <p className="dark:text-sky-700 font-medium  text-sky-800 text-lg mt-1">
+              तथ्यमा आधारित, सत्यमा केन्द्रित
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center gap-4 mt-3 md:mt-0">
-          <div className="hidden md:block">
+          {/* <div className="hidden md:block">
             <img src="/flag.gif" className="h-20 w-16 object-contain" alt="Nepal Flag" />
-          </div>
+          </div> */}
           <NepaliDateTime />
         </div>
       </Box>

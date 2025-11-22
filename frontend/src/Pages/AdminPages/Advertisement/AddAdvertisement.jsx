@@ -71,6 +71,7 @@ const AddAdvertisement = ({ onClose }) => {
         description: "",
         date: "",
         image: null,
+        popup: "active",
         status: "active",
       });
       setPreview(null);
@@ -181,7 +182,7 @@ const AddAdvertisement = ({ onClose }) => {
                 <FormLabel component="legend">Status</FormLabel>
                 <RadioGroup
                   row
-                  name="status"
+                  name="popup"
                   value={formData.popup}
                   onChange={handleChange}
                 >

@@ -35,21 +35,21 @@ const getAdvertisement = async (req, res) => {
 // ✅ Add advertisement
 const addAdvertisement = async (req, res) => {
   try {
-    const { topic, description, date, status, Popup } = req.body;
+    const { topic, description, date, status, popup } = req.body;
 
-    if (!topic || !description || !date || !status) {
+    if (!topic || !description || !date || !status || !popup) {
       return res.status(400).json({ message: "Required fields can't be empty" });
     }
 
     const normalizedStatus = status.toLowerCase() === "active" ? "active" : "inactive";
-    const normalizedPopup = Popup?.toLowerCase() === "active" ? "active" : "inactive";
+    const normalizedPopup = popup?.toLowerCase() === "active" ? "active" : "inactive";
 
     const newAdvertisement = await Advertisement.create({
       topic,
       description,
       date,
       status: normalizedStatus,
-      Popup: normalizedPopup,
+      popup: normalizedPopup,
       image: req.file ? req.file.filename : null,
     });
 
@@ -82,11 +82,11 @@ const editAdvertisement = async (req, res) => {
           ? "active"
           : "inactive"
         : ad.status,
-      Popup: req.body.Popup
-        ? req.body.Popup.toLowerCase() === "active"
+      popup: req.body.popup
+        ? req.body.popup.toLowerCase() === "active"
           ? "active"
           : "inactive"
-        : ad.Popup,
+        : ad.popup,
       image: req.file ? req.file.filename : ad.image,
     };
 
@@ -128,10 +128,10 @@ const deleteAdvertisement = async (req, res) => {
 const getPopupAdvertisements = async (req, res) => {
   try {
     const popups = await Advertisement.find({
-      status: "active",   // active status
-      Popup: "active",    // popup field active
-      image: { $exists: true, $ne: null }, // must have an image
-    }).sort({ _id: -1 }); // latest first
+      status: "active",   
+      popup: "active",    
+      image: { $exists: true, $ne: null }, 
+    }).sort({ createdAt: -1 }); 
 
     return res.status(200).json(popups);
   } catch (error) {
@@ -149,5 +149,5 @@ module.exports = {
   addAdvertisement,
   editAdvertisement,
   deleteAdvertisement,
-  getPopupAdvertisements, // <-- added
+  getPopupAdvertisements,
 };

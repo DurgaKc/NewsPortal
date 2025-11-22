@@ -9,6 +9,7 @@ export const addAdvertisement = async (data, token) => {
   form.append("description", data.description);
   form.append("date", data.date);
   form.append("status", data.status);
+  form.append("popup", data.popup);
   if (data.image) form.append("image", data.image);
 
   return axios.post(`${backendUrl}/advertisement/addAdvertisement`, form, {
@@ -18,6 +19,7 @@ export const addAdvertisement = async (data, token) => {
     },
   });
 };
+
 
 // ✅ Edit advertisement
 export const updateAdvertisement = async (id, data, token) => {

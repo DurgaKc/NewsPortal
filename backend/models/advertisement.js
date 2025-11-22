@@ -20,7 +20,7 @@ const advertisementSchema = new mongoose.Schema(
       type: String,
      
     },
-    Popup: {
+    popup: {
       type: String,
       enum: ["active", "inactive"],
       default: "active",

@@ -69,6 +69,7 @@ import Advertisement from "../Pages/UserPages/Advertisement";
 import Login from "../Components/UserLogin/Login";
 import Terms from "../Pages/UserPages/Terms";
 import AboutUs from "../Pages/UserPages/AboutUs";
+import ContactUs from "../Pages/UserPages/ContactUs";
 
 const AppRoutes = () => {
   return (
@@ -80,6 +81,7 @@ const AppRoutes = () => {
           <Route path="/advertisement" element={<Advertisement />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/aboutus" element={<AboutUs />} />
+          <Route path="/contactus" element={<ContactUs />} />
           <Route path="/news" element={<News />} />
           <Route path="/international" element={<International />} />
           <Route path="/politics" element={<Politics />} />

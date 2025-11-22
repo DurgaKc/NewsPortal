@@ -21,8 +21,8 @@ export default function Login({ onClose }) {
   const navigate = useNavigate();
 
   const [values, setValues] = useState({
-    email:"news112@gmail.com",
-    password: "NEWS1122",
+    email:"",
+    password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
 

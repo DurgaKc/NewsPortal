@@ -48,29 +48,37 @@ const LocalGovtSidebar = () => {
   const [sportsNews, setSportsNews] = useState([]);
   const [educationNews, setEducationNews] = useState([]);
 
-  useEffect(() => {
-    const fetchAllNews = async () => {
-      try {
-        const [interRes, localRes, sportsRes, educationRes] = await Promise.all([
-          getAllPolitics(),
-          getAllLocalGovernment(),
-          getAllSports(),
-          getAllEducation(),
-        ]);
+useEffect(() => {
+  const fetchAllNews = async () => {
+    try {
+      const [politicsRes, localRes, sportsRes, educationRes] = await Promise.all([
+        getAllPolitics(),
+        getAllLocalGovernment(),
+        getAllSports(),
+        getAllEducation(),
+      ]);
 
-        setPoliticsNews(interRes.data || []);
-        setLocalNews(localRes.data || []);
-        setSportsNews(sportsRes.data || []);
-        setEducationNews(educationRes.data || []);
-      } catch (error) {
-        console.error("Error fetching sidebar news:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const filterActive = (data) => {
+        return (data || []).filter((item) => {
+          const status = typeof item.status === "string" ? item.status.toLowerCase() : item.status;
+          return status === "active" || status === true;
+        });
+      };
 
-    fetchAllNews();
-  }, []);
+      setPoliticsNews(filterActive(politicsRes.data));
+      setLocalNews(filterActive(localRes.data));
+      setSportsNews(filterActive(sportsRes.data));
+      setEducationNews(filterActive(educationRes.data));
+    } catch (error) {
+      console.error("Error fetching sidebar news:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchAllNews();
+}, []);
+
 
   if (loading) {
     return (

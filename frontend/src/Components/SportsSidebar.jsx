@@ -57,32 +57,39 @@ const SportsSidebar = () => {
   const [education, setEducation] = useState([]);
 
   // ✅ Fetch all news on mount
-  useEffect(() => {
-    const fetchAllNews = async () => {
-      try {
-        const [politicsRes, localRes, interRes, healthRes, eduRes] =
-          await Promise.all([
-            getAllPolitics(),
-            getAllLocalGovernment(),
-            getAllNews(),
-            getAllHealth(),
-            getAllEducation(),
-          ]);
+useEffect(() => {
+  const fetchAllNews = async () => {
+    try {
+      const [politicsRes, localRes, interRes, healthRes, eduRes] = await Promise.all([
+        getAllPolitics(),
+        getAllLocalGovernment(),
+        getAllNews(),
+        getAllHealth(),
+        getAllEducation(),
+      ]);
 
-        setPolitics(politicsRes.data || []);
-        setLocalGov(localRes.data || []);
-        setInternational(interRes.data || []);
-        setHealth(healthRes.data || []);
-        setEducation(eduRes.data || []);
-      } catch (error) {
-        console.error("Error fetching sidebar data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+      const filterActive = (data) => {
+        return (data || []).filter((item) => {
+          const status = typeof item.status === "string" ? item.status.toLowerCase() : item.status;
+          return status === "active" || status === true;
+        });
+      };
 
-    fetchAllNews();
-  }, []);
+      setPolitics(filterActive(politicsRes.data));
+      setLocalGov(filterActive(localRes.data));
+      setInternational(filterActive(interRes.data));
+      setHealth(filterActive(healthRes.data));
+      setEducation(filterActive(eduRes.data));
+    } catch (error) {
+      console.error("Error fetching sidebar data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchAllNews();
+}, []);
+
 
   // ✅ While fetching
   if (loading) {

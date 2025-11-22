@@ -1,94 +1,115 @@
-import { useState, useEffect } from "react";
-import { IoIosCloseCircle } from "react-icons/io";
+import { useEffect, useState } from "react";
+import Popover from "@mui/material/Popover";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
 import { getPopupAdvertisements } from "../Pages/AdminPages/Advertisement/AdvertisementApi";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-function PopupBanner() {
-  const [isVisible, setIsVisible] = useState(false);
-  const [popups, setPopups] = useState([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const today = new Date().toISOString().split("T")[0];
-
-  // In PopupBanner.js - Fix the isExpired function
-const isExpired = (date) => {
-  if (!date) return false;
-  const adDate = new Date(date).toISOString().split('T')[0];
-  return adDate < today;
-};
+const PopupBanner = () => {
+  const [popupData, setPopupData] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchData() {
+    const fetchPopup = async () => {
       try {
-        console.log('Fetching popup ads...');
-        const { data } = await getPopupAdvertisements();
-        console.log('Raw API response:', data);
+        setLoading(true);
+        const res = await getPopupAdvertisements();
+        console.log('🎯 Popup API Full Response:', res);
+        console.log('📊 Response data:', res?.data);
+        console.log('🔢 Number of popups found:', res?.data?.length);
 
-        const valid = data
-          .filter(
-            (item) =>
-              item.status === "active" &&
-              item.Popup === "active" &&
-              item.image &&
-              !isExpired(item.date)
-          )
-         .sort((a, b) => new Date(b.date) - new Date(a.date));
-
-console.log('Filtered popups:', valid);
-        setPopups(valid);
-        setIsVisible(valid.length > 0);
+        if (res?.data?.length > 0) {
+          const popup = res.data[0];
+          console.log(' Popup data found:', popup);
+          console.log(' Image path:', `${backendUrl}/images/${popup.image}`);
+          console.log(' Popup status:', popup.Popup);
+          console.log(' General status:', popup.status);
+          
+          setPopupData(popup);
+          setAnchorEl(document.body);
+        } else {
+          console.log(' No active popup advertisements found');
+        }
       } catch (err) {
-        console.error("Popup fetch error:", err);
+        console.error(' Error fetching popup:', err);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
 
-    fetchData();
+    fetchPopup();
   }, []);
 
- console.log('PopupBanner state:', { isVisible, popups, currentIndex });
+  if (loading) {
+    return <div>Loading popup...</div>;
+  }
 
-  if (!isVisible || popups.length === 0) {
-    console.log('Popup not rendered - condition not met');
+  if (!popupData) {
+    console.log('No popup data available');
     return null;
   }
 
-  const ad = popups[currentIndex];
+  console.log('🎨 Rendering popup with data:', popupData);
+
+  const handleClose = () => setAnchorEl(null);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black bg-opacity-60" onClick={closePopup} />
-
-      <div className="relative w-[520px] h-[600px] bg-white rounded-xl shadow-xl overflow-hidden z-20">
-        <div className="relative p-3 border-b bg-white">
-          <button
-            className="absolute top-2 right-2 text-gray-600 hover:text-red-600"
-            onClick={closePopup}
+    <div>
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "center", horizontal: "center" }}
+        transformOrigin={{ vertical: "center", horizontal: "center" }}
+        PaperProps={{
+          sx: {
+            borderRadius: 2,
+            p: 1,
+            maxWidth: 400,
+            maxHeight: 400,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+          },
+        }}
+      >
+        <div style={{ position: "relative" }}>
+          <IconButton
+            onClick={handleClose}
+            size="small"
+            sx={{
+              position: "absolute",
+              top: 4,
+              right: 4,
+              backgroundColor: "rgba(255,255,255,0.9)",
+              zIndex: 10,
+            }}
           >
-            <IoIosCloseCircle className="text-3xl" />
-          </button>
-          <h3 className="text-lg font-semibold text-gray-800 pr-10">
-            {ad.topic}
-          </h3>
-        </div>
+            <CloseIcon fontSize="small" />
+          </IconButton>
 
-        <div className="flex-1 overflow-auto">
           <img
-            src={`${backendUrl}/images/${ad.image}`}
-            className="w-full h-auto object-contain p-4"
-            alt="popup"
-            onError={(e) => (e.target.src = "/no-image.png")}
+            src={`${backendUrl}/images/${popupData.image}`}
+            alt="Advertisement Popup"
+            style={{
+              width: "100%",
+              height: "auto",
+              borderRadius: "8px",
+              display: "block",
+            }}
+            onError={(e) => {
+              console.error('Error loading image:', e);
+              console.error('Failed image URL:', `${backendUrl}/images/${popupData.image}`);
+              e.target.style.display = 'none';
+            }}
+            onLoad={() => {
+              console.log('✅ Image loaded successfully');
+            }}
           />
         </div>
-
-        {popups.length > 1 && (
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 bg-black bg-opacity-60 text-white px-3 py-1 rounded-full text-sm">
-            {currentIndex + 1} / {popups.length}
-          </div>
-        )}
-      </div>
+      </Popover>
     </div>
   );
-}
+};
 
 export default PopupBanner;
